@@ -1,0 +1,1595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to Sell Skio — Rep Enablement</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700;9..144,800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #EDE9DF;
+  --surface: #F7F3EB;
+  --sidebar: #1A1814;
+  --sidebar-hover: #2C2820;
+  --accent: #1847F0;
+  --accent-light: #DDE5FF;
+  --text: #1A1814;
+  --muted: #7A7468;
+  --border: #D5CEC4;
+  --white: #FAF7F2;
+  --success: #4E6320;
+  --success-bg: #E8EED4;
+  --warn: #A85D0A;
+  --warn-bg: #FBF0E2;
+  --locked: #9A9288;
+  --reader-max: 720px;
+  --serif: 'Fraunces', Georgia, serif;
+}
+body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); height: 100vh; overflow: hidden; }
+#app { height: 100vh; display: flex; flex-direction: column; }
+
+/* Login */
+.login-wrap { flex: 1; display: flex; align-items: center; justify-content: center; background: var(--sidebar); }
+.login-card { background: var(--white); border-radius: 20px; padding: 52px; width: 100%; max-width: 440px; border: 1px solid var(--border); }
+.login-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 36px; }
+.login-logo-badge { background: var(--accent); color: white; font-family: var(--serif); font-weight: 700; font-size: 18px; padding: 6px 16px; border-radius: 99px; letter-spacing: -0.01em; }
+.login-logo-sub { font-size: 13px; color: var(--muted); font-weight: 500; }
+.login-card h1 { font-family: var(--serif); font-size: 28px; font-weight: 600; margin-bottom: 6px; line-height: 1.2; letter-spacing: -0.02em; }
+.login-card p { color: var(--muted); font-size: 14px; margin-bottom: 32px; }
+.form-group { margin-bottom: 16px; }
+.form-group label { display: block; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 7px; color: var(--muted); }
+.form-group input { width: 100%; padding: 11px 16px; border: 1.5px solid var(--border); border-radius: 10px; font-size: 14px; font-family: inherit; outline: none; transition: border-color 0.15s; background: var(--bg); color: var(--text); }
+.form-group input:focus { border-color: var(--accent); background: var(--white); }
+.btn-primary { width: 100%; padding: 13px; background: var(--accent); color: white; border: none; border-radius: 99px; font-size: 14px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; cursor: pointer; font-family: inherit; transition: background 0.15s, opacity 0.15s; }
+.btn-primary:hover { background: #0F35CC; }
+.btn-primary:disabled { opacity: 0.35; cursor: not-allowed; }
+.login-note { margin-top: 16px; font-size: 12px; color: var(--muted); text-align: center; }
+
+/* Shell */
+.shell { flex: 1; display: flex; overflow: hidden; }
+
+/* Sidebar */
+.sidebar { width: 260px; background: var(--sidebar); color: white; display: flex; flex-direction: column; overflow-y: auto; flex-shrink: 0; }
+.sidebar-header { padding: 24px 20px 18px; border-bottom: 1px solid rgba(255,255,255,0.07); }
+.sidebar-brand { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.sidebar-badge { background: var(--accent); font-family: var(--serif); font-weight: 700; font-size: 15px; padding: 4px 14px; border-radius: 99px; letter-spacing: -0.01em; }
+.sidebar-title { font-size: 11px; color: rgba(255,255,255,0.4); font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; }
+.sidebar-rep { margin-top: 10px; font-size: 12px; color: rgba(255,255,255,0.4); }
+.sidebar-rep strong { color: rgba(255,255,255,0.75); font-weight: 600; }
+.sidebar-nav { flex: 1; padding: 14px 10px; }
+.ssi { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 10px; cursor: pointer; transition: background 0.12s; margin-bottom: 2px; }
+.ssi:hover:not(.locked) { background: var(--sidebar-hover); }
+.ssi.active { background: rgba(24,71,240,0.22); }
+.ssi.locked { opacity: 0.4; cursor: not-allowed; }
+.ssi-num { width: 24px; height: 24px; border-radius: 7px; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+.ssi-num.done { background: var(--success); }
+.ssi-num.lock { background: rgba(255,255,255,0.05); font-size: 12px; }
+.ssi-info { flex: 1; min-width: 0; }
+.ssi-title { font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.85); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ssi-sub { font-size: 11px; color: rgba(255,255,255,0.38); margin-top: 1px; }
+.ssi-pct { font-size: 10px; color: rgba(255,255,255,0.3); margin-top: 2px; }
+.sidebar-footer { padding: 12px 10px; border-top: 1px solid rgba(255,255,255,0.07); }
+.sidebar-admin-link { font-size: 11px; color: rgba(255,255,255,0.28); cursor: pointer; text-align: center; padding: 6px; border-radius: 8px; transition: color 0.15s; letter-spacing: 0.03em; }
+.sidebar-admin-link:hover { color: rgba(255,255,255,0.6); }
+
+/* Main */
+.main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-height: 0; }
+#main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-height: 0; }
+
+/* Topbar */
+.topbar { padding: 14px 36px; border-bottom: 1px solid var(--border); background: var(--white); display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
+.topbar-breadcrumb { font-size: 13px; color: var(--muted); }
+.topbar-breadcrumb strong { color: var(--text); font-weight: 600; font-family: var(--serif); font-size: 14px; }
+.topbar-spacer { flex: 1; }
+.topbar-progress { display: flex; align-items: center; gap: 10px; }
+.topbar-progress-label { font-size: 11px; color: var(--muted); white-space: nowrap; text-transform: uppercase; letter-spacing: 0.05em; }
+.progress-bar-wrap { width: 120px; height: 5px; background: var(--border); border-radius: 99px; overflow: hidden; }
+.progress-bar-fill { height: 100%; background: var(--accent); border-radius: 99px; transition: width 0.4s; }
+.topbar-page-count { font-size: 12px; color: var(--muted); white-space: nowrap; }
+
+/* Reader */
+.reader-wrap { flex: 1; overflow-y: auto; padding: 52px 36px; min-height: 0; background: var(--bg); }
+.reader-inner { max-width: var(--reader-max); margin: 0 auto; }
+.reader-inner h1 { font-family: var(--serif); font-size: 32px; font-weight: 600; margin-bottom: 6px; line-height: 1.18; letter-spacing: -0.025em; color: var(--text); }
+.reader-inner .page-subtitle { font-size: 15px; color: var(--muted); margin-bottom: 36px; padding-bottom: 28px; border-bottom: 1px solid var(--border); }
+.reader-inner h2 { font-family: var(--serif); font-size: 22px; font-weight: 600; margin: 32px 0 12px; letter-spacing: -0.02em; color: var(--text); }
+.reader-inner h3 { font-family: var(--serif); font-size: 17px; font-weight: 600; margin: 22px 0 8px; letter-spacing: -0.01em; color: var(--text); }
+.reader-inner p { font-size: 15px; line-height: 1.78; color: #4A4540; margin-bottom: 15px; }
+.reader-inner ul, .reader-inner ol { padding-left: 22px; margin-bottom: 15px; }
+.reader-inner li { font-size: 15px; line-height: 1.72; color: #4A4540; margin-bottom: 6px; }
+.reader-inner strong { font-weight: 600; color: var(--text); }
+
+/* Callouts */
+.callout { border-radius: 12px; padding: 16px 20px; margin: 22px 0; font-size: 14px; line-height: 1.65; }
+.callout-accent { background: var(--accent-light); border-left: 3px solid var(--accent); }
+.callout-warn { background: var(--warn-bg); border-left: 3px solid var(--warn); }
+.callout-success { background: var(--success-bg); border-left: 3px solid var(--success); }
+.callout-dark { background: var(--surface); border-left: 3px solid var(--border); }
+.callout-title { font-weight: 700; margin-bottom: 6px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em; }
+.callout-accent .callout-title { color: var(--accent); }
+.callout-warn .callout-title { color: var(--warn); }
+.callout-success .callout-title { color: var(--success); }
+.callout-dark .callout-title { color: var(--muted); }
+
+/* Talk track */
+.talk-track { background: var(--white); border: 1.5px solid var(--border); border-radius: 12px; padding: 22px 24px 22px 36px; margin: 22px 0; font-size: 15px; line-height: 1.8; color: #2A2820; font-family: var(--serif); font-style: italic; position: relative; }
+.talk-track::before { content: '"'; font-size: 72px; color: var(--border); position: absolute; top: -6px; left: 14px; font-family: var(--serif); line-height: 1; }
+.talk-track-label { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.09em; color: var(--accent); margin-bottom: 10px; font-style: normal; }
+
+/* Do/Don't */
+.do-dont { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 22px 0; }
+.do-block { background: var(--success-bg); border: 1px solid #C5D49A; border-radius: 12px; padding: 16px; }
+.dont-block { background: #FBF0EE; border: 1px solid #F0C4BA; border-radius: 12px; padding: 16px; }
+.do-block-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--success); margin-bottom: 8px; }
+.dont-block-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: #A8360A; margin-bottom: 8px; }
+.do-block li, .dont-block li { font-size: 13px; line-height: 1.6; color: var(--text); margin-bottom: 4px; }
+
+/* Nav footer */
+.reader-nav { padding: 16px 36px; border-top: 1px solid var(--border); background: var(--white); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+.btn-nav { display: flex; align-items: center; gap: 8px; padding: 10px 22px; border-radius: 99px; font-size: 13px; font-weight: 600; letter-spacing: 0.03em; cursor: pointer; font-family: inherit; border: 1.5px solid var(--border); background: transparent; color: var(--text); transition: all 0.15s; }
+.btn-nav:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+.btn-nav:disabled { opacity: 0.3; cursor: not-allowed; }
+.btn-nav-primary { background: var(--accent); color: white; border-color: var(--accent); letter-spacing: 0.05em; text-transform: uppercase; font-size: 12px; }
+.btn-nav-primary:hover:not(:disabled) { background: #0F35CC; border-color: #0F35CC; color: white; }
+.nav-center { font-size: 13px; color: var(--muted); }
+
+/* Dashboard */
+.dashboard-wrap { flex: 1; overflow-y: auto; padding: 44px 36px; min-height: 0; background: var(--bg); }
+.dashboard-inner { max-width: 880px; margin: 0 auto; }
+.dashboard-header { margin-bottom: 32px; }
+.dashboard-header h1 { font-family: var(--serif); font-size: 30px; font-weight: 600; margin-bottom: 6px; letter-spacing: -0.025em; }
+.dashboard-header p { font-size: 15px; color: var(--muted); }
+.section-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.section-card { background: var(--white); border: 1.5px solid var(--border); border-radius: 16px; padding: 26px; cursor: pointer; transition: all 0.15s; position: relative; }
+.section-card:hover:not(.locked) { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(24,71,240,0.1); }
+.section-card.complete { border-color: #C5D49A; }
+.section-card.locked { opacity: 0.5; cursor: not-allowed; }
+.sc-num { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+.sc-title { font-family: var(--serif); font-size: 20px; font-weight: 600; margin-bottom: 4px; letter-spacing: -0.02em; line-height: 1.2; }
+.sc-sub { font-size: 13px; color: var(--muted); margin-bottom: 18px; }
+.sc-meta { display: flex; align-items: center; gap: 12px; }
+.sc-pages { font-size: 12px; color: var(--muted); }
+.sc-status { font-size: 11px; font-weight: 600; padding: 3px 12px; border-radius: 99px; letter-spacing: 0.03em; }
+.sc-status.not-started { background: var(--surface); color: var(--muted); }
+.sc-status.in-progress { background: var(--warn-bg); color: var(--warn); }
+.sc-status.submitted { background: var(--accent-light); color: var(--accent); }
+.sc-status.complete { background: var(--success-bg); color: var(--success); }
+.sc-status.locked { background: var(--surface); color: var(--locked); }
+.sc-progress-bar { margin-top: 18px; height: 3px; background: var(--border); border-radius: 99px; overflow: hidden; }
+.sc-progress-fill { height: 100%; background: var(--accent); border-radius: 99px; transition: width 0.4s; }
+.section-card.complete .sc-progress-fill { background: var(--success); }
+.overall-progress { background: var(--white); border: 1.5px solid var(--border); border-radius: 16px; padding: 26px; margin-bottom: 20px; display: flex; align-items: center; gap: 24px; }
+.op-ring { position: relative; width: 72px; height: 72px; flex-shrink: 0; }
+.op-ring svg { transform: rotate(-90deg); }
+.op-ring-text { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: var(--serif); font-size: 17px; font-weight: 600; letter-spacing: -0.02em; }
+.op-info h2 { font-family: var(--serif); font-size: 19px; font-weight: 600; margin-bottom: 4px; letter-spacing: -0.02em; }
+.op-info p { font-size: 13px; color: var(--muted); }
+
+/* Homework page */
+.hw-wrap { max-width: var(--reader-max); margin: 0 auto; }
+.hw-header { margin-bottom: 28px; padding-bottom: 22px; border-bottom: 1px solid var(--border); }
+.hw-header h1 { font-family: var(--serif); font-size: 26px; font-weight: 600; margin-bottom: 8px; letter-spacing: -0.02em; }
+.hw-header p { font-size: 14px; color: var(--muted); line-height: 1.6; }
+.hw-group { margin-bottom: 32px; }
+.hw-group-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.09em; color: var(--accent); margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1.5px solid var(--accent-light); }
+.hw-item { margin-bottom: 20px; }
+.hw-item-label { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.05em; font-size: 11px; }
+.hw-item-prompt { font-size: 14px; color: var(--text); margin-bottom: 9px; line-height: 1.55; font-weight: 500; }
+.hw-input { width: 100%; padding: 11px 14px; border: 1.5px solid var(--border); border-radius: 10px; font-size: 14px; font-family: inherit; outline: none; transition: border-color 0.15s; background: var(--white); color: var(--text); }
+.hw-input:focus { border-color: var(--accent); }
+.hw-textarea { width: 100%; padding: 11px 14px; border: 1.5px solid var(--border); border-radius: 10px; font-size: 14px; font-family: inherit; outline: none; transition: border-color 0.15s; resize: vertical; min-height: 80px; background: var(--white); color: var(--text); }
+.hw-textarea:focus { border-color: var(--accent); }
+.hw-link-note { display: flex; flex-direction: column; gap: 8px; }
+.hw-submitted-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--success-bg); color: var(--success); font-size: 12px; font-weight: 600; padding: 5px 14px; border-radius: 99px; margin-bottom: 16px; letter-spacing: 0.03em; }
+.hw-answer-readonly { background: var(--surface); border-radius: 10px; padding: 11px 14px; font-size: 14px; color: var(--text); line-height: 1.6; white-space: pre-wrap; word-break: break-word; }
+.hw-feedback-block { margin-top: 8px; background: var(--warn-bg); border-radius: 8px; padding: 9px 13px; font-size: 12px; color: var(--warn); }
+.hw-feedback-block strong { display: block; margin-bottom: 2px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; }
+
+/* Admin */
+.admin-gate { flex: 1; display: flex; align-items: center; justify-content: center; padding: 32px; background: var(--bg); }
+.admin-gate-card { background: var(--white); border-radius: 16px; padding: 44px; width: 100%; max-width: 400px; border: 1.5px solid var(--border); }
+.admin-wrap { flex: 1; overflow-y: auto; padding: 36px; min-height: 0; background: var(--bg); }
+.admin-inner { max-width: 920px; margin: 0 auto; }
+.admin-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
+.admin-header h1 { font-family: var(--serif); font-size: 26px; font-weight: 600; letter-spacing: -0.02em; }
+.rep-table { background: var(--white); border: 1.5px solid var(--border); border-radius: 16px; overflow: hidden; }
+.rep-table-head { display: grid; grid-template-columns: 1fr 100px 100px 120px; padding: 11px 22px; background: var(--surface); border-bottom: 1px solid var(--border); }
+.rep-table-head span { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); }
+.rep-row { display: grid; grid-template-columns: 1fr 100px 100px 120px; padding: 15px 22px; border-bottom: 1px solid var(--border); align-items: center; cursor: pointer; transition: background 0.12s; }
+.rep-row:last-child { border-bottom: none; }
+.rep-row:hover { background: var(--bg); }
+.rep-name { font-size: 14px; font-weight: 600; }
+.rep-email { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.rep-cell { font-size: 13px; color: var(--muted); }
+.pill { display: inline-flex; padding: 3px 12px; border-radius: 99px; font-size: 11px; font-weight: 600; letter-spacing: 0.03em; }
+.pill-green { background: var(--success-bg); color: var(--success); }
+.pill-blue { background: var(--accent-light); color: var(--accent); }
+.pill-yellow { background: var(--warn-bg); color: var(--warn); }
+.pill-gray { background: var(--surface); color: var(--muted); }
+.btn-sm { padding: 7px 18px; border-radius: 99px; font-size: 12px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; cursor: pointer; font-family: inherit; border: 1.5px solid var(--border); background: transparent; color: var(--text); transition: all 0.15s; }
+.btn-sm:hover { border-color: var(--accent); color: var(--accent); }
+.btn-sm-primary { background: var(--accent); color: white; border-color: var(--accent); }
+.btn-sm-primary:hover { background: #0F35CC; }
+.btn-sm-danger { background: transparent; color: #A8360A; border-color: #F0C4BA; }
+
+/* Grade view */
+.grade-section { background: var(--white); border: 1.5px solid var(--border); border-radius: 16px; padding: 26px; margin-bottom: 16px; }
+.grade-section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
+.grade-section-header h3 { font-family: var(--serif); font-size: 17px; font-weight: 600; letter-spacing: -0.015em; }
+.qa-item { margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--bg); }
+.qa-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.qa-question { font-size: 13px; font-weight: 600; margin-bottom: 7px; }
+.qa-answer { font-size: 13px; color: #4A4540; background: var(--bg); border-radius: 8px; padding: 10px 13px; margin-bottom: 9px; line-height: 1.6; white-space: pre-wrap; word-break: break-word; }
+.qa-grade-row { display: flex; align-items: center; gap: 10px; }
+.star-row { display: flex; gap: 4px; }
+.star { font-size: 18px; cursor: pointer; color: var(--border); transition: color 0.1s; line-height: 1; }
+.star.on { color: #C8960A; }
+.grade-note { flex: 1; padding: 6px 11px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 12px; font-family: inherit; outline: none; background: var(--bg); color: var(--text); }
+.grade-note:focus { border-color: var(--accent); }
+
+/* Toast */
+.toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--sidebar); color: white; padding: 11px 22px; border-radius: 99px; font-size: 13px; font-weight: 500; z-index: 999; opacity: 0; transition: opacity 0.2s; pointer-events: none; }
+.toast.show { opacity: 1; }
+
+/* Animations */
+.fade-in { animation: fadeIn 0.2s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div class="toast" id="toast"></div>
+<script>
+
+// ═══════════════════════════════════════════════════
+//  HOMEWORK DEFINITIONS
+// ═══════════════════════════════════════════════════
+
+const HOMEWORK = {
+  s1: {
+    title: 'Section 1 Homework',
+    intro: 'Record a short Loom of yourself delivering the acquisition narrative and talk track from memory — no reading. This is the most-used line you\'ll say in Q4.',
+    groups: [
+      { title: 'Acquisition Narrative Loom', items: [
+        { id: 's1_loom', type: 'loom', label: 'Loom Video URL', prompt: 'Record yourself delivering the full acquisition narrative + talk track from memory. Paste your Loom share link below.' }
+      ]}
+    ]
+  },
+  s2: {
+    title: 'Section 2 · Check Yourself',
+    intro: 'Answer each question in your own words. These are open-book — use your notes from the reading. The goal is to confirm you can explain each concept without reading from the guide.',
+    groups: [
+      { title: 'Subscription Widget', items: [
+        { id: 's2_w1', type: 'quiz', label: 'Q1', prompt: 'When a merchant launches with Skio, who builds their existing widget design?' },
+        { id: 's2_w2', type: 'quiz', label: 'Q2', prompt: 'If a merchant wants a brand-new custom widget design, whose job is that?' },
+        { id: 's2_w3', type: 'quiz', label: 'Q3', prompt: 'Which upsell types does Skio support, and which does it NOT support today?' }
+      ]},
+      { title: 'Bundles / Build-a-Bundle', items: [
+        { id: 's2_b1', type: 'quiz', label: 'Q1', prompt: 'What are the two types of native bundles Skio offers, and how does each price?' },
+        { id: 's2_b2', type: 'quiz', label: 'Q2', prompt: 'In a dynamic bundle, what happens to the discount when a subscriber removes products?' },
+        { id: 's2_b3', type: 'quiz', label: 'Q3', prompt: 'Name a brand that moved to Skio specifically for volume bundling.' }
+      ]},
+      { title: 'Checkout Link Builder', items: [
+        { id: 's2_c1', type: 'quiz', label: 'Q1', prompt: 'Where does the Checkout Link Builder live in the dashboard, and what does the link do when a shopper clicks it?' },
+        { id: 's2_c2', type: 'quiz', label: 'Q2', prompt: 'Why is it an acquisition tool rather than a retention tool?' },
+        { id: 's2_c3', type: 'quiz', label: 'Q3', prompt: 'What\'s its retention counterpart, and what\'s the difference between the two?' }
+      ]},
+      { title: 'Customer Portal (CPv3)', items: [
+        { id: 's2_p1', type: 'quiz', label: 'Q1', prompt: 'A customer has three active subscriptions — what do they see when they open CPv3, and what changes if they only have one?' },
+        { id: 's2_p2', type: 'quiz', label: 'Q2', prompt: 'Name three actions a customer can take from inside a subscription in the portal.' },
+        { id: 's2_p3', type: 'quiz', label: 'Q3', prompt: 'Which four situations make the Split action unavailable?' },
+        { id: 's2_p4', type: 'quiz', label: 'Q4', prompt: 'Does Skio\'s auto-created account replace the Shopify customer account, and what has to be true for passwordless login to work?' }
+      ]},
+      { title: 'Backup Payment Methods', items: [
+        { id: 's2_bp1', type: 'quiz', label: 'Q1', prompt: 'What happens when a subscriber\'s primary card fails and they have a backup card on file?' },
+        { id: 's2_bp2', type: 'quiz', label: 'Q2', prompt: 'Where must backup payment methods be turned on, and what are the two ways a customer can add one?' },
+        { id: 's2_bp3', type: 'quiz', label: 'Q3', prompt: 'Why should a discount code attached to a backup-payment link be set to "once per customer"?' }
+      ]},
+      { title: 'Payment Recovery (Dunning)', items: [
+        { id: 's2_pr1', type: 'quiz', label: 'Q1', prompt: 'Roughly what share of failed payments recover automatically from card retries alone, before you ever email the customer?' },
+        { id: 's2_pr2', type: 'quiz', label: 'Q2', prompt: 'What does enabling Smart Retries change, and what does it always respect?' },
+        { id: 's2_pr3', type: 'quiz', label: 'Q3', prompt: 'In a good multi-phase setup, at what point should you introduce a discount, and at what point should you first notify the customer via Klaviyo?' }
+      ]},
+      { title: 'Cancellation Flows & Splash Screens', items: [
+        { id: 's2_cf1', type: 'quiz', label: 'Q1', prompt: 'What is a splash screen, when does it fire relative to the cancel flow, and name three actions you can attach to it.' },
+        { id: 's2_cf2', type: 'quiz', label: 'Q2', prompt: 'A subscriber qualifies for two different cancel flows — what decides which one they see?' },
+        { id: 's2_cf3', type: 'quiz', label: 'Q3', prompt: 'What\'s the difference between Split Treatments and flow-level A/B testing?' },
+        { id: 's2_cf4', type: 'quiz', label: 'Q4', prompt: 'What does the {{ savedBySubscribing }} variable do, and what does enabling custom Flow HTML disable?' }
+      ]},
+      { title: 'Journeys', items: [
+        { id: 's2_j1', type: 'quiz', label: 'Q1', prompt: 'What are the three node types in a Journey, and what does each one do?' },
+        { id: 's2_j2', type: 'quiz', label: 'Q2', prompt: 'What\'s the difference between a trigger filter and a condition?' },
+        { id: 's2_j3', type: 'quiz', label: 'Q3', prompt: 'The trigger is called "After a product is added." How do you make it fire when a product is removed instead?' },
+        { id: 's2_j4', type: 'quiz', label: 'Q4', prompt: 'Name one Journey action that changes pricing and one that changes the schedule.' }
+      ]},
+      { title: 'Segments', items: [
+        { id: 's2_sg1', type: 'quiz', label: 'Q1', prompt: 'What\'s the difference between a Static and a Dynamic segment, and how often does a Dynamic one refresh?' },
+        { id: 's2_sg2', type: 'quiz', label: 'Q2', prompt: 'Can you edit a segment after creating it? If not, how do you change its filters?' },
+        { id: 's2_sg3', type: 'quiz', label: 'Q3', prompt: 'Name two things you can do with a segment once it\'s built.' }
+      ]},
+      { title: 'Loyalty', items: [
+        { id: 's2_l1', type: 'quiz', label: 'Q1', prompt: 'What are the three parts of Skio Loyalty?' },
+        { id: 's2_l2', type: 'quiz', label: 'Q2', prompt: 'What\'s the difference between the Customer Portal Rewards page and the Rewards landing page?' },
+        { id: 's2_l3', type: 'quiz', label: 'Q3', prompt: 'What does the Loyalty Widget show on a PDP, and how does a logged-in shopper\'s view differ from an anonymous one?' },
+        { id: 's2_l4', type: 'quiz', label: 'Q4', prompt: 'Name one advantage of rewarding with credits instead of blanket discounts.' }
+      ]},
+      { title: 'SkioSMS', items: [
+        { id: 's2_sm1', type: 'quiz', label: 'Q1', prompt: 'What are the two jobs SkioSMS does?' },
+        { id: 's2_sm2', type: 'quiz', label: 'Q2', prompt: 'Do you need to bring your own phone number or SMS provider? How does the number get set up?' },
+        { id: 's2_sm3', type: 'quiz', label: 'Q3', prompt: 'How does SkioSMS relate to a marketing SMS tool like Postscript or Attentive, and why keep them on separate numbers?' }
+      ]}
+    ]
+  },
+  s3: {
+    title: 'Section 3 Homework',
+    intro: 'For each demo step, "build it or find it" — build the feature in your demo store OR find a live merchant who demonstrates it well. Paste a link with a 1–2 sentence note on why you chose it.',
+    groups: [
+      { title: 'Demo Step Examples', items: [
+        { id: 's3_pdp',       type: 'link_note', label: 'Step 2 · PDP / Subscription Widget', prompt: 'A live merchant with a great subscribe-and-save + cart/checkout upsell moment.' },
+        { id: 's3_bundles',   type: 'link_note', label: 'Step 3 · Volume Discounts / Bundles', prompt: 'A merchant running volume discounts or a dynamic build-a-box well.' },
+        { id: 's3_portal',    type: 'link_note', label: 'Step 4 · Customer Portal', prompt: 'A reskinned portal in your demo store, or a live merchant portal that nails the subscriber experience.' },
+        { id: 's3_journeys',  type: 'link_note', label: 'Step 5 · Journeys', prompt: 'A Journey you built (e.g., trial → full-size swap) or a screenshot/Loom of one in under 2 minutes.' },
+        { id: 's3_surprise',  type: 'link_note', label: 'Step 6 · Surprise & Delight / Streaks', prompt: 'A surprise & delight or streak rule you built, or a merchant example of gamified retention.' },
+        { id: 's3_cancel',    type: 'link_note', label: 'Step 7 · Cancel Flow', prompt: 'A cancel flow with a splash screen and an LTV-segmented offer — or run through a live merchant cancel flow as a customer.' },
+        { id: 's3_segments',  type: 'link_note', label: 'Step 8 · Segmentation', prompt: 'A "churn risk" segment you built in your demo store, opened in analytics.' },
+        { id: 's3_analytics', type: 'link_note', label: 'Step 9 · Analytics', prompt: 'The analytics dashboard that best tells a retention story. Note which one you\'d lead with and why.' },
+        { id: 's3_loyalty',   type: 'link_note', label: 'Step 10 · Loyalty', prompt: 'A Loyalty feature turned on with the Rewards page confirmed in your demo store, or a strong merchant loyalty example.' }
+      ]}
+    ]
+  },
+  s4: {
+    title: 'Section 4 Homework',
+    intro: 'Record a Loom for each competitive situation. Deliver the talk track in your own words and handle the main traps/objections.',
+    groups: [
+      { title: 'Competitive Looms', items: [
+        { id: 's4_loop',        type: 'loom', label: 'vs. Loop Loom', prompt: 'Deliver the Loop talk track (both new-to-subs and migrating-off angles), the proof points, and the closer. 2–3 minutes.' },
+        { id: 's4_stay',        type: 'loom', label: 'vs. Stay Loom', prompt: 'Deliver the Stay talk track and counter all three traps (price, feature parity, brand recognition). 2–3 minutes.' },
+        { id: 's4_ordergroove', type: 'loom', label: 'vs. Ordergroove Loom', prompt: 'Walk through the four Ordergroove differences (Shopify-native, dev-team lock-in, productized + API, poor contracts) in your own words.' }
+      ]}
+    ]
+  },
+  s5: {
+    title: 'Section 5 · Certification Submission',
+    intro: 'You\'ve finished the course. Confirm the checklist below and add any notes for your capstone session.',
+    groups: [
+      { title: 'Capstone Notes', items: [
+        { id: 's5_notes', type: 'textarea', label: 'Notes / Questions for Your Capstone', prompt: 'Any areas you want to review, questions you still have, or things you want to practice in the mock demo.' }
+      ]}
+    ]
+  }
+};
+
+// ═══════════════════════════════════════════════════
+//  SECTIONS (content pages)
+// ═══════════════════════════════════════════════════
+
+const SECTIONS = [
+  { id:'s1', num:1, title:'The Narrative', subtitle:'The Acquisition Story', pages:[
+    { id:'s1p1', title:'Introduction', content:`
+      <h1>How to Sell Skio</h1>
+      <p class="page-subtitle">Rep Enablement Course · Transitioning from Recharge to Skio as our default platform · Effective Q4</p>
+      <p>Recharge AE's, welcome back to school! This textbook is a guide that will get you to a point where you can ideally sell Skio with confidence. You already know how to sell subscription software, so this is a translation, not a complete restart. As we near a transition to Skio being the default platform we sell to new merchants, take your time to get up to speed. This guide will help improve your knowledge of Skio and thereby (hopefully) increase your commission checks starting next month 😉.</p>
+      <p>Work through this textbook in order: understand the acquisition narrative and talk tracks, learn the Skio product, learn how to demo the platform, and practice competitive talk tracks.</p>
+      <h2>The course has five parts:</h2>
+      <ul>
+        <li><strong>The Narrative:</strong> why we acquired Skio and how to tell that story</li>
+        <li><strong>The Product:</strong> how Skio actually works — a feature reference, organized by acquisition and retention</li>
+        <li><strong>The Demo:</strong> how to run a great demo — the flow, talk tracks, and what to show</li>
+        <li><strong>Talk Tracks &amp; Competitive:</strong> new positioning and objection handling</li>
+        <li><strong>Skio Certification:</strong> hands-on homework in your demo store + a capstone to get certified</li>
+      </ul>
+      <div class="callout callout-accent"><div class="callout-title">📋 Homework: Getting Your 'Skio Diploma'</div>Throughout each section, there will be specific points where you will be asked to verify and validate your learning. Through a combination of call-recordings, recorded Loom videos and quizzes, you'll be tested on your knowledge as you read the guide. Every AE needs to pass each part before they're allowed to start selling Skio as the default.<br><br>Ultimately, each AE will have to pass a mock-demo with their manager. This guide will help ensure you pass that on your first attempt. Please do not skim through the material, take your time and soak it all in.</div>
+`},
+    { id:'s1p2', title:'Why We Acquired Skio', content:`
+      <h1>Section 1 · The Narrative: The Acquisition Story</h1>
+      <p class="page-subtitle">This is where every conversation starts, so it comes first. The moment you pull up the platform, the merchant sees the word Skio, and you need an answer that sounds confident and planned, not defensive or improvised. The goal of this section is that you can tell the acquisition story in 30 seconds and mean it.</p>
+      <p>Read the internal context below so you understand the why behind the acquisition. Then use the approved external script when you're actually in front of a merchant. Don't read the internal reasoning to customers verbatim — it's for your understanding, not their ears.</p>
+      <h2>Why we acquired Skio (internal context, for your understanding)</h2>
+      <p>The short version, straight from Oisin (Recharge CEO) and Aidan (Skio CEO):</p>
+      <h3>1. Skio was winning our best customers.</h3>
+      <p>When Recharge looked at its churn, especially the biggest and fastest-growing merchants, roughly 65% of it was going to Skio. Four other players split the rest in the 5–10% range, but Skio was the outlier. Brands would graduate off Recharge and onto Skio, and Recharge had a difficult time ripping them back out. That was an existential signal, not a minor competitive loss.</p>
+      <h3>2. The market moved, and Skio was built for where it went.</h3>
+      <p>Recharge was originally built for developers, an API-first platform. The market shifted from "APIs and developers" to "out-of-the-box and turnkey." Then later, it shifted again to "turnkey plus a great partner who helps me grow." The joining of great software with great services behind it. Skio was built natively for that world: out-of-the-box, CPG-focused, built for high-growth merchants, with strong services and CSM support built in.</p>
+      <h3>3. Focus won the best part of the market.</h3>
+      <p>Skio deliberately said no to most of the market and focused on mid-market-and-up CPG brands — beauty, supplements, food &amp; beverage, home. That focus let them deliver a high level of tech, support, and guidance that generalist platforms (Recharge included) couldn't match. As Oisin put it, "you are what you say no to." Your boundaries, choices, and refusals define your character and values just as much as the things you accept. Recharge accepted everyone; Skio was more deliberate on serving only their best customers.</p>
+`},
+    { id:'s1p3', title:'Best Tech + The Plan Forward', content:`
+      <h3>4. Best tech + best team.</h3>
+      <p>Under the hood, Skio's engineering foundation is the differentiator — built natively on Shopify's Subscriptions API, on modern infrastructure (Vercel, BigQuery), with an intentionally structured subscription data model sitting right next to Shopify. That's why competitors "can't match the quality of data" or the quality of features. Paired with a services team merchants actually want as a growth partner, it's the combination that made Skio the platform to beat.</p>
+      <h3>5. The plan post-acquisition: accelerate, don't interfere.</h3>
+      <p>Recharge isn't absorbing Skio and slowing it down. The explicit goal is to put the fire-power of Recharge's size and reliable infrastructure behind what's already working, accelerate the Skio roadmap and let the team keep doing what made them the market leader. <strong>Skio is where our R&amp;D investment goes for brands going forward.</strong></p>
+      <div class="callout callout-accent"><div class="callout-title">🎧 Listen</div><a href="https://us-9979.app.gong.io/call?id=3459090866241233018&amp;highlights=%5B%7B%22type%22%3A%22SHARE%22%2C%22from%22%3A275%2C%22to%22%3A456%7D%5D" target="_blank" rel="noopener" style="color:var(--accent);font-weight:600;">▶ Oisin on why we bought Skio (Gong)</a><br><a href="https://us-9979.app.gong.io/call?id=3459090866241233018&amp;highlights=%5B%7B%22type%22%3A%22SHARE%22%2C%22from%22%3A456%2C%22to%22%3A741%7D%5D" target="_blank" rel="noopener" style="color:var(--accent);font-weight:600;">▶ Aidan on Skio's tech philosophy &amp; standout features (Gong)</a></div>
+      <h2>Proof the tech is the crown jewel</h2>
+      <p>A few things Skio shipped that competitors still haven't matched:</p>
+      <ul>
+        <li><strong>Cancel-flow A/B testing,</strong> Klaviyo-style testing, rebuilt from the ground up rather than bolted on</li>
+        <li><strong>Advanced segmentation + Klaviyo sync,</strong> slice and dice subscriber data and push it to Klaviyo</li>
+        <li><strong>Subscription-first loyalty,</strong> the first loyalty platform built specifically for subscription brands</li>
+        <li><strong>Bundles &amp; volume discounts,</strong> "buy more, save more" gamified logic; discounts scale up and down as subscribers add or remove products</li>
+      </ul>
+`},
+    { id:'s1p4', title:'The Approved Talk Track', content:`
+      <h2>The approved talk track (say this to merchants)</h2>
+      <p>Use this near the top of a demo, right as you're about to share your screen, so the Skio branding is framed before merchants can wonder about it. Keep it to ~30 seconds. Make it yours, but hit these beats:</p>
+      <div class="talk-track"><div class="talk-track-label">🎤 Your script</div>"Before we jump in, a quick bit of context. You're going to see Skio when we pull up the platform today. Skio is now a Recharge brand; we acquired them earlier this year, and the Skio tech is where we're investing our R&amp;D going forward for brands just like you.<br><br>Skio's built natively on Shopify's Subscriptions API, which means we ship faster than anyone in the space, stay closest to Shopify's roadmap, and everything works out of the box without custom workarounds.<br><br>The brands you probably know in this space — Grüns, IM8, Dose Daily, Neuro Gum, Instant Hydration — they're all running on the Skio tech. These are the fastest-growing subscription brands, and what you're about to see is exactly what they're running on."</div>
+      <h3>Why this works:</h3>
+      <ul>
+        <li><strong>Leads with confidence.</strong> "Now a Recharge brand" + "where we're investing R&amp;D" frames the acquisition as strength, not disruption.</li>
+        <li><strong>Gives one crisp technical reason.</strong> "Built natively on Shopify's Subscriptions API" = faster shipping, closest to Shopify, no custom workarounds. One reason, said well, beats five.</li>
+        <li><strong>Ends on social proof.</strong> Naming the fastest-growing brands the merchant already admires makes them want to be in that group.</li>
+      </ul>
+      <h2>Proof points &amp; names to drop</h2>
+      <p>Marquee brands on the Skio tech: Grüns, IM8, Dose Daily, Neuro Gum, Instant Hydration. Use the ones closest to your merchant's category (supplements, beauty, food &amp; beverage, hydration). "A brand like you is already running on this" is far more persuasive than a feature list.</p>
+`},
+    { id:'s1p5', title:'Do / Don\'t + Language Tips', content:`
+      <div class="callout callout-accent" style="margin-bottom:24px;"><div class="callout-title">🎥 See it in action</div><a href="https://us-9979.app.gong.io/call?id=2931213802554701786&amp;highlights=%5B%7B%22type%22%3A%22SHARE%22%2C%22from%22%3A438%2C%22to%22%3A495%7D%5D" target="_blank" rel="noopener" style="color:var(--accent);font-weight:600;">▶ Watch how Nick introduces Skio here</a></div>
+      <h2>Do / Don't</h2>
+      <div class="do-dont">
+        <div class="do-block"><div class="do-block-title">✓ Do</div><ul>
+          <li>Frame the acquisition as investment and acceleration — better tech, more resources, faster roadmap.</li>
+          <li>Lead the demo with the talk track before sharing your screen.</li>
+          <li>Anchor on the native Shopify Subscriptions API story and name-drop peer brands.</li>
+          <li>Project continuity: same company, stronger platform.</li>
+        </ul></div>
+        <div class="dont-block"><div class="dont-block-title">✗ Don't</div><ul>
+          <li>Don't disparage Recharge — it's our company. Frame it as evolution, not as "the old thing was bad."</li>
+          <li>Don't imply anyone is being forced off a platform or read the internal churn numbers to a customer.</li>
+          <li>Don't over-promise on migration specifics or timelines that aren't confirmed — if unsure, say you'll follow up.</li>
+          <li>Don't turn the 30-second story into a five-minute monologue. Say it, then get into the product.</li>
+        </ul></div>
+      </div>
+      <h2>Language tip — Skio is "us," not "them"</h2>
+      <p>Post-acquisition, Skio is our tech. Say "we," "us," "our Skio tech," "we acquired" — never refer to Skio as a separate company you're weighing against Recharge.</p>
+      <p>Frame any move to Skio as an <em>upgrade</em>, not a switch: "the brands that look like you are upgrading to our Skio tech."</p>
+      <div class="callout callout-warn"><div class="callout-title">🚫 Retired language</div>Never position against Recharge — it's the same company now. The old Skio pitch leaned hard on beating Recharge ("following their coattails," "taking down their brands"). That language is retired; using it means trashing our own company.</div>
+`},
+    { id:'s1hw', type:'homework', title:'Section 1 Homework' }
+  ]},
+  { id:'s2', num:2, title:'The Product', subtitle:'How Skio Actually Works', pages:[
+    { id:'s2p1', title:'Product Overview', content:`
+      <h1>Section 2 · The Product: How Skio Actually Works</h1>
+      <p class="page-subtitle">This is your reference — what each feature actually does, how it's set up, and where its limits are. The next section (The Demo) covers how to show this; this section is what you reach for when a prospect asks something off-script and you need the real answer.</p>
+      <p>This section provides an in-depth overview of the different product categories inside the Skio platform. For specific technical questions, try using #ask-echo in Slack and then ask a SE.</p>
+      <p>The section is organized the way Skio itself is — by <strong>Acquisition</strong> (getting new subscribers) and <strong>Retention</strong> (keeping them). Skio's own dashboard splits into an Acquire and a Retain menu, so this mirrors what you'll see on screen.</p>
+      <div class="callout callout-warn"><div class="callout-title">⚠️ Be honest about limits</div>This section names what Skio does NOT do (in-cart upsells, widget A/B testing, etc.). Knowing the gaps cold makes you more credible, not less — and stops you from promising something in a demo that the product can't deliver.</div>
+      <h2>🔵 Acquisition: getting new subscribers</h2>
+      <ul><li>The Subscription Widget (PDP)</li><li>Bundles / Build-a-Bundle</li><li>Checkout Link Builder</li></ul>
+      <h2>🟢 Retention: keeping subscribers</h2>
+      <ul><li>Customer Portal (CPv3)</li><li>Backup Payment Methods</li><li>Payment Recovery (Dunning)</li><li>Splash Screens &amp; Cancellation Flows</li><li>Journeys</li><li>Segments</li><li>Loyalty</li><li>Winbacks · SkioSMS · Analytics &amp; Reporting · Email Notifications</li></ul>
+`},
+    { id:'s2p2', title:'Subscription Widget', content:`
+      <h2>🔵 Acquisition · The Subscription Widget (PDP)</h2>
+      <p>This is the subscribe-and-save selector on the product page — where a shopper chooses one-time vs. subscription, frequency, and plan.</p>
+      <ul>
+        <li><strong>OOTB or custom.</strong> Skio supports both an out-of-the-box widget and fully custom widgets.</li>
+        <li><strong>Migrating in?</strong> The launch team matches your current design. If a merchant is coming off a competing solution, Skio's launch team rebuilds the existing widget's look — no agency or dev required. This is a strong migration talking point.</li>
+        <li><strong>Want something brand-new/different?</strong> That's on the merchant to design and build — Skio's team matches an existing widget, it doesn't design net-new custom ones for you.</li>
+        <li><strong>Setup works just like Recharge.</strong> You create selling plans, attach them to products, and use Shopify's theme editor + app block configuration to place the widget on the storefront. Reps who know the Recharge flow already know this.</li>
+      </ul>
+      <div class="callout callout-warn"><div class="callout-title">⚠️ Upsell limits — know these cold</div>Skio supports <strong>checkout upsells</strong> via Shopify's checkout extensions.<br><br>Skio does <strong>NOT</strong> currently support in-cart upsells or post-purchase upsells (Recharge does). If a prospect needs cart or post-purchase upsell today, that's a genuine gap — don't imply otherwise in a demo.</div>
+      <div class="callout callout-dark"><div class="callout-title">A/B testing the widget: Skio does not have this</div>If the merchant asks, use this reframe: "We looked into A/B testing the widget pretty deeply as we enhanced our tech. The problem with testing price on the widget is you'd have two customers on the same site — one sees $39, one sees $34 — and neither converts because they don't trust the price. What we do instead is segmentation: take that same test, apply it to a defined cohort, let it run, and measure against your baseline. You get the data without undermining your brand."</div>
+`},
+    { id:'s2q1', type:'quiz', title:'Check Yourself · Widget', quizGroupIndices:[0] },
+    { id:'s2p3', title:'Bundles & Checkout Links', content:`
+      <h2>🔵 Acquisition · Bundles / Build-a-Bundle</h2>
+      <p>Skio has a native build-a-bundle — no third-party app required. Two turnkey types:</p>
+      <ul>
+        <li><strong>Static bundles,</strong> fixed-price bundles (a set number of products at one price).</li>
+        <li><strong>Dynamic bundles,</strong> "buy more, save more" volume logic where the price and discount both scale up as products are added, and back down as they're removed.</li>
+      </ul>
+      <p>Both are out-of-the-box. This is a differentiator — dynamic/volume bundling is something competitors have struggled to deliver (Aloha moved to Skio for this specifically).</p>
+      <p><strong>See examples:</strong> Aloha, WeHeartNutrition</p>
+      <hr style="border:none;border-top:1px solid var(--border);margin:28px 0;">
+      <h2>🔵 Acquisition · Checkout Link Builder</h2>
+      <p>Found under the <strong>Acquire</strong> dropdown in the Skio dashboard. It generates prefilled, direct-to-checkout links: you add one or more products, set quantities, and optionally apply a discount code, and Skio produces a single URL that drops the shopper straight into Shopify checkout with the right product and selling plan already attached.</p>
+      <h3>Why it's an acquisition tool:</h3>
+      <ul>
+        <li><strong>Removes friction</strong> — skips the PDP and cart entirely, so a campaign click goes right to checkout as a subscriber.</li>
+        <li><strong>Built for campaigns</strong> — ideal for ads, promos, PDP buttons, and influencer/affiliate links where you want the fewest possible clicks to a subscription.</li>
+        <li><strong>Discount baked in</strong> — a promo code applied to the link auto-applies at checkout, so the offer and the path are one and the same.</li>
+      </ul>
+      <div class="callout callout-dark"><div class="callout-title">Position it against its retention cousin</div><strong>Checkout Link Builder = ACQUISITION</strong> (get new customers subscribed). Its counterpart, Quick Actions, = <strong>RETENTION</strong> (authenticated links that let existing subscribers skip, swap, update card, etc.). Same "one link" idea, opposite ends of the lifecycle. We'll cover Quick Actions in the Retention part.</div>
+`},
+    { id:'s2q2', type:'quiz', title:'Check Yourself · Bundles + Checkout Links', quizGroupIndices:[1,2] },
+    { id:'s2p4', title:'Customer Portal (CPv3)', content:`
+      <h2>🟢 Retention · Customer Portal (CPv3)</h2>
+      <p>The customer portal is where subscribers manage their accounts. Just as Recharge has Affinity v1 and v2, Skio has evolved through CPv1, CPv2, and CPv3. We focus on CPv3, the current portal. It's a real-time drag-and-drop builder: you control the branding, which actions customers can take, and how everything is laid out.</p>
+      <h3>What's new in v3</h3>
+      <ul>
+        <li><strong>Card-based subscription view.</strong> Customers with more than one subscription see them all in a scannable 2×2 card grid instead of a long vertical list. Customers with a single subscription are taken straight to that subscription when they open the portal.</li>
+        <li><strong>Simplified action buttons.</strong> Key actions appear as prominent buttons at the top of each subscription (Get now, Skip, and a "More" menu for additional actions) instead of hunting through the interface.</li>
+        <li><strong>Full merchant customization.</strong> You control colors and branding, which actions customers can take, and how the buttons are organized — so the portal matches your brand and supports your retention strategy.</li>
+      </ul>
+      <h3>Inside a subscription (View details)</h3>
+      <p>Clicking a card opens the full management view: action buttons (Get now, Skip, More), line items with +/− quantity controls, shipping address, payment method, order summary, and an order history tab showing ALL orders including non-subscription orders.</p>
+      <div class="callout callout-accent"><div class="callout-title">◆ KEY DIFFERENCE vs. RECHARGE</div>The Order History tab shows ALL customer orders, including non-subscription orders. Recharge did not support this.</div>
+      <h3>Available actions (you choose which are on)</h3>
+      <p>CPv3 supports: Get now · Skip · Pause · Edit frequency · Next order date · Apply discount · Cancel · Merge · Split · Product skip · Gift on skip · Quantity editing. You decide which are available and how they're organized in the experience settings.</p>
+      <div class="callout callout-warn"><div class="callout-title">⚠️ Split limitation — know this</div>The Split action does not appear for subscriptions that are <strong>prepaid</strong>, contain a <strong>one-time upsell</strong>, contain <strong>surprise &amp; delight products</strong>, or have <strong>discounts applied</strong>.</div>
+      <h3>Login &amp; Accounts</h3>
+      <ul>
+        <li><strong>Passwordless login.</strong> A subscriber enters their email and gets a 4-digit 2FA code by email (and by text to the phone on file if there is one).</li>
+        <li><strong>Stays logged in.</strong> After a subscriber logs in once, Skio keeps them logged in on that device, making future management easier.</li>
+        <li><strong>Auto-created accounts.</strong> Skio automatically creates and activates a Skio account at checkout — no more activation complaints from frustrated subscribers. Note: this doesn't replace the Shopify customer account.</li>
+      </ul>
+`},
+    { id:'s2q3', type:'quiz', title:'Check Yourself · Customer Portal', quizGroupIndices:[3] },
+    { id:'s2p5', title:'Payment Methods & Recovery', content:`
+      <h2>🟢 Retention · The Portal Builder</h2>
+      <p>The portal settings page is a real-time, drag-and-drop builder. As you change colors, splash images, banners, or button text, the preview updates instantly. Toggle the right-hand preview across views (subscription detail, subscription overview, order history, and the login screen) and switch between desktop and mobile. When done, click <strong>Publish</strong> (top right) — changes go live immediately.</p>
+      <hr style="border:none;border-top:1px solid var(--border);margin:28px 0;">
+      <h2>🟢 Retention · Backup Payment Methods</h2>
+      <p>Customers can add multiple cards, including a backup payment method. Backup payment methods reduce involuntary churn: if a subscriber's primary card fails, Skio automatically retries the charge on their backup card. They must be enabled in your Skio dashboard. Customers add and manage them two ways: through the Customer Portal (if enabled in portal settings), or via a Quick Action link.</p>
+      <h3>Sending a backup-payment Quick Action link:</h3>
+      <ul>
+        <li>Skio Dashboard → Grow → Quick Actions</li>
+        <li>Create new action → Modify existing subscription</li>
+        <li>Select the action: Set backup payment method</li>
+        <li>Choose link type: Universal, Klaviyo, Sendlane, or Skio</li>
+        <li>(Optional) Attach a discount code as an incentive — set to "once per customer" to prevent reuse</li>
+      </ul>
+      <div class="callout callout-success"><div class="callout-title">💡 Best practices</div>Regularly remind customers to add/update a backup card via email (in Klaviyo you can filter out those who already have one). Offer a small discount to incentivize setup. Use both the portal callout and Quick Actions so customers have the easiest path to add and manage backup cards.</div>
+`},
+    { id:'s2q4', type:'quiz', title:'Check Yourself · Backup Payment + Dunning', quizGroupIndices:[4,5] },
+    { id:'s2p6', title:'Cancellation Flows', content:`
+      <h2>🟢 Retention · Payment Recovery (Dunning)</h2>
+      <p>Payment Recovery manages failed subscription renewals during the dunning window — the period that opens when a payment fails and closes when the subscription either renews successfully or cancels. It expands on traditional dunning with flexible, multi-phase retry logic: instead of a single retry limit, you build adaptive recovery campaigns with multiple retry phases, each with its own number of billing attempts and intervals.</p>
+      <ul>
+        <li><strong>Retry the card first.</strong> Attempt multiple retries on the card on file before emailing the subscriber. About 15% of failed payments recover automatically with no customer action — fewer emails, lower cancellation risk, fewer support tickets, and a smoother experience.</li>
+        <li><strong>Smart Retries</strong> automatically optimize when retries fire (best time of day, day of week, and day of month) using Skio's data model. Your configured total number of retries is always respected, but Skio may adjust the interval for a more effective schedule.</li>
+      </ul>
+      <h3>Best practices</h3>
+      <ul>
+        <li>Enable Smart Retries — the single highest-leverage setting.</li>
+        <li>Configure the first two phases with back-to-back retries on the card, then offer a discount in a third phase.</li>
+        <li>Only email the customer after multiple on-file retries in phases 1–2.</li>
+      </ul>
+      <hr style="border:none;border-top:1px solid var(--border);margin:28px 0;">
+      <h2>🟢 Retention · Splash Screens</h2>
+      <p>A splash screen is a temporary modal that appears before the cancel flow officially begins — a "Before you go" moment. It usually holds a video (a founder message or a light/funny clip) that nudges the subscriber toward an alternate action instead of canceling. It's the first line of defense before any survey or treatment step.</p>
+      <ul>
+        <li>Any action can be attached: Skip, swap, choose a specific next order date, order now, pause, or send them to an external link.</li>
+        <li>Segmented — run multiple splash screens based on conditions and customer segments.</li>
+      </ul>
+      <div class="callout callout-success"><div class="callout-title">📊 Impact worth quoting</div>Adding a splash screen alone has reduced cancellations by ~18% for some merchants.</div>
+      <h2>🟢 Retention · Cancellation Flows</h2>
+      <p>The cancel flow is the sequence a subscriber hits when they click "cancel" — one of Skio's strongest retention surfaces. You can run different flows for different segments (e.g., new vs. long-term subscribers), with built-in conflict resolution so when a customer qualifies for more than one flow, the right flow always wins.</p>
+      <h3>The node types:</h3>
+      <ul>
+        <li><strong>Splash Screen:</strong> the "Before you go" modal; sits ahead of the main flow.</li>
+        <li><strong>Cancellation Reason:</strong> selectable reasons a customer can pick; randomized on entry.</li>
+        <li><strong>Treatment:</strong> the retention offer shown based on the selected reason (discount, pause, skip next order, etc.).</li>
+        <li><strong>Split Treatments:</strong> randomly split customers between different treatment paths to test strategies.</li>
+      </ul>
+      <div class="callout callout-dark"><div class="callout-title">Split Treatments vs. A/B testing</div><strong>Split Treatments</strong> split customers across treatment paths within a single flow.<br><strong>A/B testing</strong> operates at the flow level: direct a set % of customers to flow A vs. flow B for measured results.</div>
+`},
+    { id:'s2q5', type:'quiz', title:'Check Yourself · Cancel Flows', quizGroupIndices:[6] },
+    { id:'s2p7', title:'Journeys', content:`
+      <h2>🟢 Retention · Journeys</h2>
+      <p>Journeys is Skio's visual workflow builder — a drag-and-drop way to automate subscription changes across the customer lifecycle. You build "if this, then that" logic that responds to real-time events (an order placed, a product added, a billing date changed), with no code and deep integrations like Klaviyo.</p>
+      <h3>How it works — three node types</h3>
+      <ul>
+        <li><strong>Trigger node</strong> — when the Journey begins (e.g., after an order, after a product change).</li>
+        <li><strong>Condition node</strong> — the rules that decide which customers follow which path.</li>
+        <li><strong>Action node</strong> — what happens (swap product, apply discount, send notification, etc.).</li>
+      </ul>
+      <h3>Common use cases</h3>
+      <ul>
+        <li>Trial-to-full-size conversions — automatically swap a trial SKU for the full-size product after a set cycle, adjusting the price.</li>
+        <li>High-discount order 1 → change discount on order 2.</li>
+        <li>Bundle expansion / kit splitting — break a bundled SKU into individual products at a chosen point.</li>
+        <li>Lifecycle upsell &amp; cross-sell — add one-time or recurring products after key actions or thresholds.</li>
+      </ul>
+      <h3>Triggers (when a Journey starts)</h3>
+      <ul>
+        <li><strong>After order</strong> — fires after an order completes. Use the Order number filter to distinguish checkout from recurring.</li>
+        <li><strong>After a product is added</strong> — fires when a product is added or removed from a subscription. Key callout: it also triggers on product removal despite the name — flip the Quantity changes toggle to fire on removals too.</li>
+        <li><strong>After next manual billing date change</strong> — fires after a manual change via Quick Actions or the Customer Portal.</li>
+      </ul>
+      <div class="callout callout-dark"><div class="callout-title">Trigger filters vs. conditions</div><strong>Trigger filters</strong> control which ORDERS trigger the flow. <strong>Conditions</strong> determine which CUSTOMERS go down each path after it's triggered.</div>
+      <h3>Actions (what happens)</h3>
+      <p>Swap product · Add discount · Add product · Change delivery price · Change interval · Trigger banner · Update product price · Adjust next billing date · Notification (email, SMS, or integration event) · Bundle expansion · Delay · Remove products · Remove discounts · Pause subscription · Award credits · Sunset prepaid.</p>
+      <p><strong>Prebuilt templates:</strong> Product swap · Upgrade suggestion · Change discount over time.</p>
+`},
+    { id:'s2q6', type:'quiz', title:'Check Yourself · Journeys', quizGroupIndices:[7] },
+    { id:'s2p8', title:'Segments, Loyalty & SMS', content:`
+      <h2>🟢 Retention · Segments</h2>
+      <p>A Segment is a filtered view of your subscriptions that meet conditions you define. Use them to compare performance between subscriber groups, export targeted lists for campaigns, and focus analytics on a subset. Segments are the thread that connects the rest of the platform — the same logic layer powers journeys, cancel flows, and reporting.</p>
+      <ul>
+        <li><strong>Static</strong> — a one-time snapshot of subscribers who met the conditions at creation. Best for point-in-time analysis like cohort comparisons.</li>
+        <li><strong>Dynamic</strong> — auto-updates every night, adding and removing subscriptions as they meet (or stop meeting) the criteria. Best for ongoing monitoring and real-time campaign targeting.</li>
+      </ul>
+      <div class="callout callout-warn"><div class="callout-title">⚠️ Segments can't be edited</div>There's no edit after creation. To change the filters, delete the Segment and create a new one.</div>
+      <hr style="border:none;border-top:1px solid var(--border);margin:28px 0;">
+      <h2>🟢 Retention · Loyalty</h2>
+      <p>Skio Loyalty boosts lifetime value and reduces churn by rewarding shoppers for purchases and brand engagement. Unlike bolt-on loyalty apps, it's built to integrate with subscriptions — a subscription-first program. It breaks into three parts:</p>
+      <ul>
+        <li><strong>Tiers &amp; Rewards</strong> — gamified tiers that reward customers for staying active and spending more.</li>
+        <li><strong>Credits</strong> — redeemable store credit for purchases and brand interactions. Preserves margin vs. blanket discounts.</li>
+        <li><strong>Referrals</strong> — turn your best customers into a growth channel with rewards for both the referrer and the new customer.</li>
+      </ul>
+      <hr style="border:none;border-top:1px solid var(--border);margin:28px 0;">
+      <h2>🟢 Retention · SkioSMS</h2>
+      <p>SkioSMS is Skio's built-in transactional SMS and subscription-management tool. It does two jobs:</p>
+      <ul>
+        <li><strong>One-way notifications</strong> — automated messages for billing reminders, successful orders, failed payments, skips, and cancellations.</li>
+        <li><strong>Two-way subscription management</strong> — customers text back to skip, pause, change an order date, swap products, add items, and more.</li>
+      </ul>
+      <p>You don't need to bring your own SMS provider or phone number. Skio assigns your store a dedicated Twilio-powered number for transactional subscription messages, included at no additional cost.</p>
+      <div class="callout callout-dark"><div class="callout-title">How it fits with Postscript / Attentive / Klaviyo SMS</div>Keep them separate: SkioSMS handles transactional subscription notices + two-way subscription management; your marketing provider handles promotional campaigns. A customer who opts out of marketing texts doesn't also miss important billing or subscription-management messages.</div>
+`},
+    { id:'s2q7', type:'quiz', title:'Check Yourself · Segments, Loyalty + SMS', quizGroupIndices:[8,9,10] },
+    { id:'s2hw', type:'homework', title:'Section 2 Complete' }
+  ]},
+  { id:'s3', num:3, title:'The Demo', subtitle:'How to Run a Great Skio Demo', pages:[
+    { id:'s3p1', title:'Demo Overview', content:`
+      <h1>Section 3 · The Demo: How to Run a Great Skio Demo</h1>
+      <p class="page-subtitle">You each have your own demo store — this section is your run of show for it. We're not covering every feature; we're covering the most important ones in the order you'll demo them. The whole flow below is a live demo against your own store, using the merchant's products and branding wherever possible.</p>
+      <div class="callout callout-accent"><div class="callout-title">⏱ Where to spend your time</div><strong>Go deep on:</strong> Customer Portal, Journeys, Cancel Flow, and Volume Discounts. These are the moments that win deals.<br><br><strong>Keep it light on:</strong> PDP widget, Analytics — unless a technical/data buyer is on the call, in which case Analytics is where you win them.<br><br><em>Golden rule: say it, own it, move on. A tight flow beats a feature tour every time.</em></div>
+      <div class="callout callout-dark"><div class="callout-title">◆ KEY DIFFERENCE vs. RECHARGE — keep this soundbite ready</div>"Recharge was built 12 years ago, before Shopify's Subscriptions API, so a lot of custom logic is baked in — it's more for complex-API customers. Skio was built after 2020 as a wrapper around the Subscriptions API: faster shipping, faster portal, GraphQL instead of REST. It's just a faster tool, and it's where our R&amp;D is going for brands like yours. A lot of merchants are <strong>upgrading</strong> to the Skio tech." Note the framing: <em>upgrading</em>, not switching.</div>
+      <h2>The 10-step demo flow:</h2>
+      <ol>
+        <li>Set the Stage</li>
+        <li>PDP — Subscription Widget + Conversion Tools</li>
+        <li>Volume Discounts, Build-a-Box &amp; Bundles</li>
+        <li>Customer Portal</li>
+        <li>Journeys</li>
+        <li>Surprise &amp; Delight + Streaks</li>
+        <li>Cancel Flow</li>
+        <li>Segmentation</li>
+        <li>Analytics &amp; Reporting</li>
+        <li>Loyalty</li>
+      </ol>
+`},
+    { id:'s3p2', title:'Steps 1–2: Stage + PDP', content:`
+      <h2>1. Set the Stage</h2>
+      <p>Pull up a live customer website and lead with it immediately — don't wait for them to notice the Skio branding. Open with the approved talk track (same one from Section 1). A natural way top reps set it up: <em>"You'll probably see Skio everywhere today — that's on purpose."</em></p>
+      <p>Set the deliverable early: <em>"We also build a custom demo environment for every brand we work with. I'll walk you through it today and send it over as a resource for you and your team to review — the goal is to see what this looks like with your products, your branding, and your store."</em></p>
+      <hr style="border:none;border-top:1px solid var(--border);margin:28px 0;">
+      <h2>2. PDP — Subscription Widget + Conversion Tools</h2>
+      <p>Don't over-index here — this is not a key differentiator in the space. The same talk tracks you used at Recharge apply. Hit it and keep moving:</p>
+      <div class="talk-track"><div class="talk-track-label">🎤 Talk track</div>"The front end starts exactly like any Shopify store — someone finds a product, adds to cart, checks out. But here's where it gets interesting: most brands are stitching together three or four different apps to influence that journey — one for cart upsells, another for checkout cross-sells, another for subscription conversion. Recharge consolidates all of that into one platform.<br><br>Right in the cart, we can prompt a one-time buyer to switch to a subscription and save, and surface a complementary product at the same time. On Shopify Plus, we extend that into checkout itself: subscription upgrade, cross-sell, even a frequency swap.<br><br>This is the new kingpin strategy for our fastest-scaling merchants — it lets you collect 3–4 months of cash upfront. Once you have that advance on cashflow, you can scale fast and accelerate growth. They're not waiting until post-purchase to optimize, they're shaping subscriber behavior at the exact moment someone commits. Grüns does this very well in their portal too."</div>
+      <p><strong>Second-bite play (top reps use this):</strong> if the buyer doesn't take the bigger commitment on the PDP, catch them in the portal after order 1 with an "upgrade to quarterly" banner.</p>
+      <p><strong>Front-end stores to demo:</strong> Dose Daily · Transparent Labs · Grüns (custom widget) · IM8 (quantity upsell) · Neuro Gum · Instant Hydration</p>
+`},
+    { id:'s3p3', title:'Steps 3–4: Bundles + Portal', content:`
+      <h2>3. Volume Discounts, Build-a-Box &amp; Bundles</h2>
+      <p>Lead with this for any consumable / CPG catalog — it's a top-tier differentiator. Skio is the only platform in the space that has made volume discounts work: buy-more-save-more logic where the discount scales up as a subscriber adds products and scales back down if they remove them.</p>
+      <div class="talk-track"><div class="talk-track-label">🎤 Talk track</div>"We're the only company in the space that's brought volume discounts to life. As a subscriber adds more products, the discount grows — and if they downgrade their stack, it scales back with them. It's the natural way to grow AOV: people don't buy everything at once, but on order 3 or 4 you dynamically nudge them to add more and save more."</div>
+      <p><strong>Proof to name-drop:</strong> Aloha came to Skio for this after 3 different agencies and 3 different builds elsewhere couldn't pull it off; Mozy moved for the same reason.</p>
+      <p><strong>Build-a-Box / bundles:</strong> Just Ingredients (Build a Bundle) · Bulletproof Coffee (Build a Bundle)</p>
+      <hr style="border:none;border-top:1px solid var(--border);margin:28px 0;">
+      <h2>4. Customer Portal</h2>
+      <p>This is where you spend real time. Walk through live: editing frequency, pushing the next order date, swapping products, adding a one-time item.</p>
+      <div class="talk-track"><div class="talk-track-label">🎤 Talk track</div>"The goal is to give customers four different ways to take the same action. The number one reason someone calls your support team is because they can't figure out how to skip or delay an order. We make that impossible to miss."</div>
+      <p><strong>Differentiators reps consistently win with:</strong></p>
+      <ul>
+        <li><strong>Passwordless login / magic link.</strong> Skio auto-creates an account on the first order; customers get a 4-digit code + magic link, no password resets.</li>
+        <li><strong>Smart upsell carousel.</strong> Recommends products based on what they're already subscribed to — won't show them what they already have. Medterra grew AOV $6 within 2–3 weeks of turning it on.</li>
+        <li><strong>Backup payment method.</strong> Customers store a backup card that auto-retries on failure — a direct answer to involuntary/dunning churn.</li>
+        <li><strong>"Get it now."</strong> Place the next order immediately — one of the only platforms that offers it.</li>
+        <li><strong>Skip at the individual-product level</strong> — skip one item in a multi-product subscription without skipping or churning the whole order.</li>
+      </ul>
+      <p>Then flip to the backend and show the modular portal builder — drag and drop, no code, built like Shopify's own theme editor.</p>
+      <div class="callout callout-warn"><div class="callout-title">⚠️ Live accounts — look, don't touch</div>Graymatter Labs, IM8, and Grüns are live accounts. Show the functionality only — do NOT change, swap, or cancel anything.</div>
+`},
+    { id:'s3p4', title:'Steps 5–7: Journeys + Cancel', content:`
+      <h2>5. Journeys</h2>
+      <p>A money moment — build one live on the call. The key is to uncover what part of their current subscription program a Journey can simplify. Common patterns: Welcome kit → refill (great for supplements) · High-discount order 1 → change discount on order 2 · Increasing discounts over time.</p>
+      <div class="talk-track"><div class="talk-track-label">🎤 Talk track</div>"Let's say you sell a trial kit and you want to automatically swap someone to a full size after their first order. Watch how long this takes."<br><br>Build it in real time — condition, action, notification — then land the punch:<br><br>"That took two minutes. Imagine everything else you can do with this."</div>
+      <hr style="border:none;border-top:1px solid var(--border);margin:28px 0;">
+      <h2>6. Surprise &amp; Delight + Streaks</h2>
+      <p>For supplement brands, connect this directly to product consumption cycles. Build one on the call and show how easy it is.</p>
+      <div class="talk-track"><div class="talk-track-label">🎤 Talk track</div>"If someone takes your product consistently for 90 days, they're more likely to see results and less likely to churn. Streaks let you reward consecutive billing cycles — don't skip your first three orders, get X."</div>
+      <div class="callout callout-warn"><div class="callout-title">⚠️ Prep for the ROI skeptic</div>Sharp merchants push back that automated gifting eats margin (Heart &amp; Soil did, hard). Reframe: "You don't run it for everyone — you target only the high-risk cohorts and moments, like the order 1→2 and 3→4 drop-offs, so the spend goes where churn actually happens."</div>
+      <hr style="border:none;border-top:1px solid var(--border);margin:28px 0;">
+      <h2>7. Cancel Flow</h2>
+      <p>One of the strongest closes in the demo. Walk through it as a customer first — click cancel, see the offer. Then flip to the backend.</p>
+      <div class="talk-track"><div class="talk-track-label">🎤 Talk track</div>"Here's the key thing: that offer I just saw isn't what your Day 1 subscriber sees. Because I've been with this brand for 10+ orders and spent X dollars, I'm getting a premium retention offer. You can segment your cancel flow by LTV, order count, whatever condition matters to you."</div>
+      <p>Open on the splash screen first. <em>"A splash screen like this alone has cut cancellations by ~18%."</em> Then show the backend depth: nested reasons → sub-reasons → treatment paths, and completely different flows by segment. <em>"A brand-new customer canceling in the first 3 days sees a totally different flow than someone 10 orders in."</em> Mention holiday-specific flows, and that whole flows can be A/B tested (% split to flow A vs. B).</p>
+`},
+    { id:'s3p5', title:'Steps 8–10: Segments, Analytics, Loyalty', content:`
+      <h2>8. Segmentation</h2>
+      <div class="talk-track"><div class="talk-track-label">🎤 Talk track</div>"Everything I've shown you today is powered by the same logic layer — conditions. You define who sees what, when, and why."</div>
+      <p>Tie it back to the cancel flow, journeys, and widget tests you just showed — it's the thread that connects the whole demo.</p>
+      <hr style="border:none;border-top:1px solid var(--border);margin:28px 0;">
+      <h2>9. Analytics &amp; Reporting</h2>
+      <p>Surface-level for most buyers — show the dashboard and flag that everything ties to subscriber behavior (LTV, churn reasons, cohort data). But read the room: if there's a data or engineering buyer on the call, this is where you win them.</p>
+      <div class="callout callout-dark"><div class="callout-title">If a technical buyer is on the call</div>Don't skim — this is your differentiator. Skio's data story: raw + aggregate data via BigQuery, a GraphQL API (we're the only one with it), the state-change table, and two flavors of webhooks. Offer a warehouse / BigQuery share and the exact queries so their team can validate every number themselves.</div>
+      <hr style="border:none;border-top:1px solid var(--border);margin:28px 0;">
+      <h2>10. Loyalty</h2>
+      <p>Qualify before you show it: <em>"Are you looking for order-based milestone rewards, or true point-based loyalty?"</em></p>
+      <p>The wedge: it's the first subscription-first loyalty program — built in-house so rewards live in the same portal as the subscription, not bolted on with discount codes copied between two apps. "Everything works in cohesion, one portal, one report."</p>
+      <div class="callout callout-warn"><div class="callout-title">⚠️ Don't push loyalty on a brand with zero subscription revenue</div>Get them live on core features first. The renewals team will upsell loyalty later.</div>
+      <hr style="border:none;border-top:1px solid var(--border);margin:28px 0;">
+      <h2>Proof-point bank</h2>
+      <p>Concrete brand + outcome lines land harder than a feature list. Keep these handy:</p>
+      <ul>
+        <li><strong>Volume discounts:</strong> Aloha moved to Skio after 3 agencies / 3 failed builds elsewhere; Mozy moved for the same reason.</li>
+        <li><strong>Smart upsell carousel:</strong> Medterra grew AOV $6 within 2–3 weeks of turning it on.</li>
+        <li><strong>Cancel-flow splash screen:</strong> ~18% reduction in cancellations.</li>
+        <li><strong>Migration speed:</strong> 5-day Lolavie migration — but don't lead with migrations. "We don't win on migrations; we win on the product."</li>
+        <li><strong>Marquee brands:</strong> Grüns, IM8 (fastest brand to $100M), Dose Daily, Everyday Dose, Bulletproof, Gray Matter.</li>
+      </ul>
+`},
+    { id:'s3hw', type:'homework', title:'Section 3 Homework' }
+  ]},
+  { id:'s4', num:4, title:'Talk Tracks & Competitive', subtitle:'New Positioning & Objection Handling', pages:[
+    { id:'s4p1', title:'Competitive Overview', content:`
+      <h1>Section 4 · Talk Tracks &amp; Competitive</h1>
+      <p class="page-subtitle">The acquisition redrew the competitive map. Skio is off the board as a competitor — it's what we sell now — and Recharge is us, so "why did you change platforms?" is an objection to handle, not a rival to beat. This section holds the approved positioning and FUD for the brands we actually compete with now, plus objection handling.</p>
+      <h2>The competitive set</h2>
+      <p>Four situations, in order of how often you'll hit them: <strong>Loop</strong> (by far the most common), <strong>Stay</strong>, <strong>budget apps</strong> (Appstle, Seal, etc.), and <strong>Ordergroove</strong>. Keep it factual — the closer only works if every claim holds up.</p>
+`},
+    { id:'s4p2', title:'vs. Loop', content:`
+      <h2>vs. Loop</h2>
+      <p>Loop is the most common competitive situation.</p>
+      <h3>When they're new to subscriptions:</h3>
+      <ul>
+        <li><strong>You get one chance to build it right.</strong> Recharge helps set the foundation for the entire subscriber experience on day one. Loop gets you live cheap, but you'll hit the ceiling faster than you think — migrating subscribers later is painful and risky. Better to start on the same platform you'll still be on at $100K MRR.</li>
+        <li><strong>The team behind it.</strong> Loop doesn't have a merchant success team that comes from Shopify and Klaviyo or that are subscription experts. You want a true extension of your team to help grow the program, not just a platform to run it on. That's the difference between going live and actually scaling.</li>
+        <li><strong>The data.</strong> Recharge's smart retries, cancel-flow segmentation, and journey logic are powered by data from 20,000+ brands. Loop works off a small fraction of that.</li>
+        <li><strong>Feature access.</strong> New features hit Recharge 6–12 months before Loop. You're not just buying what exists today — you're buying where the platform is going.</li>
+      </ul>
+      <h3>When they're migrating off Loop:</h3>
+      <div class="talk-track"><div class="talk-track-label">🎤 Talk track</div>"It's kind of like a MailChimp or OmniSend to Klaviyo relationship. Lower-cost tool, a little less pretty, a little less refined. That works when you're getting a business off the ground. But as you grow, you need something more polished — on the subscription experience, the admin, the analytics, and the strategic support behind it."</div>
+      <h3>Proof points to hit:</h3>
+      <ul>
+        <li><strong>Portal UX.</strong> Loop's portal is functional but basic. Ours is built to match how a valued subscriber should feel — premium, self-serve, modular.</li>
+        <li><strong>Rewards &amp; gifting.</strong> Loop uses static image uploads for rewards — when a product goes out of stock, the image breaks. Ours pulls live product images automatically.</li>
+        <li><strong>Smart retries.</strong> 20,000+ brands' worth of data tells you the right time to retry a card, when to send a notification, and what sequence drives recovery.</li>
+      </ul>
+      <div class="talk-track"><div class="talk-track-label">🎤 The closer</div>"I'm not going to throw logos in your face and tell you that's why you should use us. All it means is that we've won the market with the brands that care most about their subscriber experience. The question is whether that matters to you."</div>
+      <p><strong>Marquee Loop wins:</strong> BluePrint by Bryan Johnson, Resilia, LarineCo, Manly, BLYSS.</p>
+`},
+    { id:'s4p3', title:'vs. Stay & Budget Apps', content:`
+      <h2>vs. Stay</h2>
+      <p>Recharge has led the subscription space for 10+ years. Stay came up around the same time as Skio — the difference is what each company did with that time.</p>
+      <div class="talk-track"><div class="talk-track-label">🎤 Talk track</div>"Skio built impressive tech and a reputation for scaling some of the fastest-growing CPG brands on Shopify — which is exactly why we acquired them. Stay spent that same window investing heavily in marketing and telling the world how great they were. The result is that we're consistently six to twelve months ahead of where they land on features — we ship and iterate on products before they even get there.<br><br>The bigger difference is what you get after you sign. Our merchant success team comes from Shopify, from Klaviyo, from operators who've actually built and scaled subscription programs. They're not learning your business from scratch — they've lived in this ecosystem. That's who's in your corner. Stay is a solid marketing company. We're an engineering company backed by 10 years of subscription data and a team that actually knows how to grow your program."</div>
+      <h3>Traps to watch for:</h3>
+      <ul>
+        <li><strong>They'll lead with price.</strong> Counter with total cost of ownership — add up the tools they don't include natively that you'd have to bolt on elsewhere.</li>
+        <li><strong>They'll claim feature parity.</strong> Ask them to build a journey live on the call. See how long it takes.</li>
+        <li><strong>They'll lean on brand recognition.</strong> Counter with proof — Grüns, IM8, Dose Daily, Carpe chose Recharge. That's not a coincidence.</li>
+      </ul>
+      <div class="callout callout-success"><div class="callout-title">📊 The boomerang stat</div>20 brands migrated from Recharge to Stay.ai over the past 24 months — 12 are already back on our platform, with more in the pipeline.</div>
+      <p><strong>Marquee Stay wins:</strong> Dose Daily, Graymatter, Truvani, Moonbrew, Moon Juice, Apothékary.</p>
+      <hr style="border:none;border-top:1px solid var(--border);margin:28px 0;">
+      <h2>vs. Budget Apps (Appstle, Seal, etc.)</h2>
+      <p>These come up mostly on price. Handle it directly, before they anchor on the number.</p>
+      <div class="talk-track"><div class="talk-track-label">🎤 Talk track</div>"If price is the number-one concern and the budget just isn't there, I'll be straight with you — I don't recommend us. There are tools that'll get you live for less. What I'd say is that the brands doing real volume on subscriptions almost always hit a ceiling with those platforms — features you can't get, analytics you can't act on, subscriber experiences that feel cheap. When that happens, they come back. I'd rather you make the right call now than migrate twice."</div>
+`},
+    { id:'s4p4', title:'vs. Ordergroove & Objections', content:`
+      <h2>vs. Ordergroove</h2>
+      <div class="talk-track"><div class="talk-track-label">🎤 Talk track</div>"Ordergroove is a great company — they do a lot of great work and work with some really big brands. That said, there are a few key differences between how we run our companies."</div>
+      <ul>
+        <li><strong>Shopify-native, not SFCC.</strong> Recharge and Skio were both built for Shopify — it's the only platform we work with. Ordergroove was originally built for Salesforce Commerce Cloud, so their Shopify solutions are often incomplete, or filled in with custom code built for your store.</li>
+        <li><strong>Dev-team lock-in.</strong> Their "edge" is matching the exact functionality you need — which really means their dev team builds one-off features for you. Every change after that requires their dev team: change orders, new fees, slow turnaround.</li>
+        <li><strong>Productized + API.</strong> We productize new feature requests so every merchant gets them turnkey. If the platform can't do 100% of what you need, our robust API covers the gap — but our team stays out of it — which means faster implementations, better R&amp;D, and less tech debt as you grow.</li>
+        <li><strong>Poor contracts.</strong> Ordergroove relies on 3-year terms to lock you in and then forget about you. We talk to merchants all the time who feel stuck with a vendor that won't respond to them.</li>
+      </ul>
+      <hr style="border:none;border-top:1px solid var(--border);margin:28px 0;">
+      <h2>Post-acquisition objections</h2>
+      <h3>"Why did you change platforms? What happened to Recharge?"</h3>
+      <p>Lean on the "upgrade, not a switch / where our R&amp;D is going" framing from the Narrative. Skio is our tech now — same company, stronger platform, more investment going forward.</p>
+      <h3>"Are we being forced off Recharge?"</h3>
+      <p>No one is being forced off anything. Existing Recharge merchants continue on Recharge. For new business, we recommend Skio because it's where our R&amp;D is going and best fits high-growth brands.</p>
+      <h3>"How does migration work / how risky is it?"</h3>
+      <p>Don't lead with migration — "we don't win on migrations; we win on the product." Reassure: Skio's launch team handles the heavy lifting, widget matched to parity. Example: 5-day Lolavie migration when they were about to lose their subscribers.</p>
+      <div class="callout callout-dark"><div class="callout-title">Practice this live</div>These competitive and objection talk tracks are part of the capstone in Section 5 — reps handle at least two live objections to get certified.</div>
+`},
+    { id:'s4hw', type:'homework', title:'Section 4 Homework' }
+  ]},
+  { id:'s5', num:5, title:'Certification', subtitle:'Skio Certification & Capstone', pages:[
+    { id:'s5p1', title:'Certification Overview', content:`
+      <h1>Section 5 · Skio Certification</h1>
+      <p class="page-subtitle">Reading the course isn't the finish line — building in the product is. The homework and quizzes are woven through every section: as you read, you film Looms, build features in your own demo store, and check yourself with the quizzes. This page is where it all comes together.</p>
+      <h2>How certification works</h2>
+      <ol>
+        <li>Do the <strong>HOMEWORK</strong> and <strong>CHECK YOURSELF</strong> quizzes as you go, section by section, in your own demo store.</li>
+        <li>Save your proof (Looms, screenshots, demo-store links) as you collect it.</li>
+        <li>Get your manager to initial each line of the checklist below as you finish it.</li>
+        <li>Once the checklist is complete, book your capstone. Pass the rubric and you're Skio Certified.</li>
+      </ol>
+      <h2>Certification checklist</h2>
+      <ul>
+        <li>☐ <strong>Narrative:</strong> acquisition-story Loom recorded and approved.</li>
+        <li>☐ <strong>Product / Acquisition:</strong> passed the widget, bundles, and checkout-link quizzes.</li>
+        <li>☐ <strong>Product / Retention:</strong> passed the portal, payment, payment-recovery, cancel-flow, journeys, segments, loyalty, and SMS quizzes.</li>
+        <li>☐ <strong>Demo:</strong> collected and linked at least one real example for each demo step (your demo store or a live merchant), with a note on why.</li>
+        <li>☐ <strong>Competitive:</strong> Looms recorded for Loop, Stay, and Ordergroove.</li>
+      </ul>
+`},
+    { id:'s5p2', title:'Capstone Rubric', content:`
+      <h2>Capstone: the Certified Demo</h2>
+      <p>Run a full, recorded mock demo against your demo store to a peer or manager, following the Demo run-sheet. Handle at least two live objections (e.g. "Does it do in-cart upsells?", "What's the difference vs. Recharge?", "How does migration work?"). <strong>Score at least 20 / 25 on the rubric below to pass.</strong></p>
+      <div style="background:var(--white);border:1.5px solid var(--border);border-radius:14px;overflow:hidden;margin-top:20px;">
+        <div style="padding:15px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;"><div style="font-size:14px;font-weight:600;">Opened with the talk track and framed Skio as "us," not a separate company.</div><div style="font-size:13px;color:var(--muted);font-family:var(--serif);">/ 5</div></div>
+        <div style="padding:15px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;"><div style="font-size:14px;font-weight:600;">Navigated the product live without fumbling.</div><div style="font-size:13px;color:var(--muted);font-family:var(--serif);">/ 5</div></div>
+        <div style="padding:15px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;"><div style="font-size:14px;font-weight:600;">Showed the three deep-value moments: Portal, Journeys, Cancel Flow.</div><div style="font-size:13px;color:var(--muted);font-family:var(--serif);">/ 5</div></div>
+        <div style="padding:15px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;"><div style="font-size:14px;font-weight:600;">Positioned honestly and owned the limits instead of dodging them.</div><div style="font-size:13px;color:var(--muted);font-family:var(--serif);">/ 5</div></div>
+        <div style="padding:15px 22px;display:flex;align-items:center;justify-content:space-between;"><div style="font-size:14px;font-weight:600;">Handled objections and reached for the right proof point.</div><div style="font-size:13px;color:var(--muted);font-family:var(--serif);">/ 5</div></div>
+      </div>
+      <div style="background:var(--success-bg);border-radius:12px;padding:22px;margin-top:20px;">
+        <p style="font-size:12px;color:var(--success);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px;">Passing score</p>
+        <p style="font-family:var(--serif);font-size:32px;font-weight:600;color:var(--success);letter-spacing:-0.03em;">20 / 25</p>
+        <p style="font-size:13px;color:var(--success);margin-top:6px;">Score below 20 → reschedule and keep building. Score 20+ → Skio Certified. 🎓</p>
+      </div>
+`},
+    { id:'s5hw', type:'homework', title:'Certification Submission' }
+  ]}
+];
+
+// ═══════════════════════════════════════════════════
+//  STATE + STORAGE
+// ═══════════════════════════════════════════════════
+
+const state = {
+  view: 'login', user: null, progress: {},
+  reader: { sectionId: null, pageIndex: 0 },
+  adminAuthed: false, adminView: 'list', adminRepEmail: null,
+  adminReps: null,     // null = not yet fetched; [] = fetched (may be empty)
+  adminRepData: null,  // { progress, grades } for the rep currently being graded
+};
+const ADMIN_CODE = 'skio2024';
+
+function saveUser() { if (state.user) localStorage.setItem('skio_user', JSON.stringify(state.user)); }
+function loadUser() { try { state.user = JSON.parse(localStorage.getItem('skio_user')) || null; } catch(e) {} }
+// ── Progress: write to localStorage immediately, fire-and-forget to server ───
+function saveProgress() {
+  if (!state.user) return;
+  localStorage.setItem('skio_prog_' + state.user.email, JSON.stringify(state.progress));
+  fetch('/api/progress/' + encodeURIComponent(state.user.email), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ progress: state.progress, name: state.user.name }),
+  }).catch(() => {}); // silent — localStorage is the fallback
+}
+function loadProgress() {
+  if (!state.user) return;
+  try { state.progress = JSON.parse(localStorage.getItem('skio_prog_' + state.user.email)) || {}; } catch(e) { state.progress = {}; }
+}
+// On login / page load, pull latest from server and refresh state
+async function syncProgressFromServer(email) {
+  try {
+    const r = await fetch('/api/progress/' + encodeURIComponent(email));
+    const { progress } = await r.json();
+    if (progress) {
+      state.progress = progress;
+      localStorage.setItem('skio_prog_' + email, JSON.stringify(progress));
+      initProgress();
+      render();
+    }
+  } catch(e) { /* stay on localStorage */ }
+}
+function initProgress() {
+  SECTIONS.forEach(s => {
+    if (!state.progress[s.id]) {
+      state.progress[s.id] = { readPages: [], homework: {}, submitted: false };
+    } else {
+      if (!state.progress[s.id].homework) state.progress[s.id].homework = {};
+    }
+  });
+  saveProgress();
+}
+// ── Grades: stored per-rep on the server; cached in state for the admin UI ──
+function saveGrades(grades) {
+  const email = state.adminRepEmail;
+  if (!email) return;
+  // Update local state cache
+  if (state.adminRepData) state.adminRepData.grades = grades[email] || {};
+  // Persist to server
+  fetch('/api/grades/' + encodeURIComponent(email), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ grades: grades[email] || {} }),
+  }).catch(() => {});
+}
+function loadGrades() {
+  // Returns a { [email]: grades } object compatible with existing bindRepGradeView logic
+  if (state.adminRepData && state.adminRepEmail) {
+    return { [state.adminRepEmail]: state.adminRepData.grades || {} };
+  }
+  return {};
+}
+// ── Admin data fetchers ──────────────────────────────────────────────────────
+async function fetchAdminReps() {
+  try {
+    const r = await fetch('/api/reps');
+    const { reps } = await r.json();
+    state.adminReps = reps || [];
+  } catch(e) {
+    state.adminReps = []; // show empty rather than spin forever
+  }
+  render();
+}
+async function fetchRepData(email) {
+  try {
+    const [pRes, gRes] = await Promise.all([
+      fetch('/api/progress/' + encodeURIComponent(email)),
+      fetch('/api/grades/'   + encodeURIComponent(email)),
+    ]);
+    const { progress } = await pRes.json();
+    const { grades }   = await gRes.json();
+    state.adminRepData = { progress: progress || {}, grades: grades || {} };
+  } catch(e) {
+    state.adminRepData = { progress: {}, grades: {} };
+  }
+  render();
+}
+
+// ═══════════════════════════════════════════════════
+//  HELPERS
+// ═══════════════════════════════════════════════════
+
+function isSectionUnlocked(sectionId) {
+  const idx = SECTIONS.findIndex(s => s.id === sectionId);
+  if (idx === 0) return true;
+  const prev = SECTIONS[idx - 1];
+  return state.progress[prev.id] && state.progress[prev.id].submitted === true;
+}
+
+function getSectionProgress(sectionId) {
+  const section = SECTIONS.find(s => s.id === sectionId);
+  const prog = state.progress[sectionId] || { readPages: [], submitted: false };
+  const contentPages = section.pages.filter(p => !p.type);
+  const read = (prog.readPages || []).length;
+  const total = contentPages.length;
+  return { read, total, pct: total ? Math.round((read / total) * 100) : 0, submitted: !!prog.submitted };
+}
+
+function getTotalProgress() {
+  let read = 0, total = 0;
+  SECTIONS.forEach(s => { const p = getSectionProgress(s.id); read += p.read; total += p.total; });
+  return { read, total, pct: total ? Math.round((read / total) * 100) : 0 };
+}
+
+function markPageRead(sectionId, pageId) {
+  if (!state.progress[sectionId]) state.progress[sectionId] = { readPages: [], homework: {}, submitted: false };
+  const rp = state.progress[sectionId].readPages;
+  if (!rp.includes(pageId)) { rp.push(pageId); saveProgress(); }
+}
+
+function isHomeworkComplete(sectionId) {
+  const hw = HOMEWORK[sectionId];
+  if (!hw) return true;
+  const answers = (state.progress[sectionId] || {}).homework || {};
+  for (const group of hw.groups) {
+    for (const item of group.items) {
+      if (item.type === 'link_note') {
+        if (!answers[item.id + '_url'] || !answers[item.id + '_note']) return false;
+      } else {
+        if (!answers[item.id] || !String(answers[item.id]).trim()) return false;
+      }
+    }
+  }
+  return true;
+}
+
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2800);
+}
+
+// ═══════════════════════════════════════════════════
+//  RENDER ORCHESTRATOR
+// ═══════════════════════════════════════════════════
+
+function render() {
+  const app = document.getElementById('app');
+  if (state.view === 'login') { app.innerHTML = renderLogin(); bindLogin(); return; }
+  app.innerHTML = `<div class="shell">${renderSidebar()}<div class="main"><div id="main-content"></div></div></div>`;
+  const mc = document.getElementById('main-content');
+  if (state.view === 'home') { mc.innerHTML = renderDashboard(); bindDashboard(); }
+  else if (state.view === 'reader') { mc.innerHTML = renderReader(); bindReader(); }
+  else if (state.view === 'admin') {
+    if (!state.adminAuthed) { mc.innerHTML = renderAdminGate(); }
+    else if (state.adminView === 'rep') { mc.innerHTML = renderRepGradeView(); bindRepGradeView(); }
+    else { mc.innerHTML = renderAdminDashboard(); }
+    bindAdmin();
+  }
+  bindSidebar();
+}
+
+// ═══════════════════════════════════════════════════
+//  LOGIN
+// ═══════════════════════════════════════════════════
+
+function renderLogin() {
+  return `<div class="login-wrap"><div class="login-card fade-in">
+    <div class="login-logo"><div class="login-logo-badge">Skio</div><div class="login-logo-sub">by Recharge</div></div>
+    <h1>How to Sell Skio</h1><p>Rep Enablement Course · Effective Q4</p>
+    <div class="form-group"><label>Your full name</label><input type="text" id="inp-name" placeholder="First Last" autocomplete="name"></div>
+    <div class="form-group"><label>Recharge email</label><input type="email" id="inp-email" placeholder="you@rechargeapps.com" autocomplete="email"></div>
+    <button class="btn-primary" id="btn-login" disabled>Start Course →</button>
+    <p class="login-note">Your progress is saved automatically and tied to your email.</p>
+  </div></div>`;
+}
+
+function bindLogin() {
+  const name = document.getElementById('inp-name');
+  const email = document.getElementById('inp-email');
+  const btn = document.getElementById('btn-login');
+  const check = () => { btn.disabled = !(name.value.trim().length > 1 && email.value.includes('@')); };
+  name.addEventListener('input', check);
+  email.addEventListener('input', check);
+  name.addEventListener('keydown', e => { if (e.key === 'Enter') email.focus(); });
+  email.addEventListener('keydown', e => { if (e.key === 'Enter' && !btn.disabled) doLogin(); });
+  btn.addEventListener('click', doLogin);
+  function doLogin() {
+    state.user = { name: name.value.trim(), email: email.value.trim().toLowerCase() };
+    saveUser(); loadProgress(); initProgress(); state.view = 'home'; render();
+    // Async: pull latest progress from server and re-render if newer
+    syncProgressFromServer(state.user.email);
+  }
+}
+
+// ═══════════════════════════════════════════════════
+//  SIDEBAR
+// ═══════════════════════════════════════════════════
+
+function renderSidebar() {
+  const items = SECTIONS.map(s => {
+    const p = getSectionProgress(s.id);
+    const active = state.view === 'reader' && state.reader.sectionId === s.id;
+    const unlocked = isSectionUnlocked(s.id);
+    const numClass = p.submitted ? 'done' : !unlocked ? 'lock' : '';
+    const numContent = p.submitted ? '✓' : !unlocked ? '🔒' : s.num;
+    return `<div class="ssi ${active ? 'active' : ''} ${!unlocked ? 'locked' : ''}" data-nav="${s.id}">
+      <div class="ssi-num ${numClass}">${numContent}</div>
+      <div class="ssi-info">
+        <div class="ssi-title">${s.title}</div>
+        <div class="ssi-sub">${s.subtitle}</div>
+        ${p.pct > 0 && !p.submitted ? `<div class="ssi-pct">${p.pct}% read</div>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+  return `<aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-brand"><div class="sidebar-badge">Skio</div></div>
+      <div class="sidebar-title">Rep Enablement Course</div>
+      ${state.user ? `<div class="sidebar-rep">👋 <strong>${state.user.name.split(' ')[0]}</strong></div>` : ''}
+    </div>
+    <nav class="sidebar-nav">
+      <div class="ssi ${state.view === 'home' ? 'active' : ''}" data-nav="home" style="margin-bottom:8px;">
+        <div class="ssi-num" style="font-size:14px;">🏠</div>
+        <div class="ssi-info"><div class="ssi-title">Dashboard</div></div>
+      </div>
+      ${items}
+    </nav>
+    <div class="sidebar-footer"><div class="sidebar-admin-link" id="admin-link">Manager view</div></div>
+  </aside>`;
+}
+
+function bindSidebar() {
+  document.querySelectorAll('[data-nav]').forEach(el => {
+    el.addEventListener('click', () => {
+      const nav = el.dataset.nav;
+      if (nav === 'home') { state.view = 'home'; render(); return; }
+      const section = SECTIONS.find(s => s.id === nav);
+      if (!section) return;
+      if (!isSectionUnlocked(section.id)) { toast('Complete Section ' + (section.num - 1) + ' first to unlock this section.'); return; }
+      openReader(nav, 0);
+    });
+  });
+  document.getElementById('admin-link')?.addEventListener('click', () => { state.view = 'admin'; render(); });
+}
+
+// ═══════════════════════════════════════════════════
+//  DASHBOARD
+// ═══════════════════════════════════════════════════
+
+function renderDashboard() {
+  const total = getTotalProgress();
+  const C = 2 * Math.PI * 30;
+  const dash = C - (total.pct / 100) * C;
+  const submittedCount = SECTIONS.filter(s => getSectionProgress(s.id).submitted).length;
+  const cards = SECTIONS.map(s => {
+    const p = getSectionProgress(s.id);
+    const unlocked = isSectionUnlocked(s.id);
+    const statusClass = !unlocked ? 'locked' : p.submitted ? 'complete' : p.pct > 0 ? 'in-progress' : 'not-started';
+    const statusLabel = !unlocked ? '🔒 Locked' : p.submitted ? '✓ Complete' : p.pct > 0 ? 'In Progress' : 'Not Started';
+    const contentPageCount = s.pages.filter(pg => !pg.type).length;
+    return `<div class="section-card ${p.submitted ? 'complete' : ''} ${!unlocked ? 'locked' : ''}" data-open="${s.id}">
+      <div class="sc-num">Section ${s.num} ${!unlocked ? '&nbsp;🔒' : ''}</div>
+      <div class="sc-title">${s.title}</div>
+      <div class="sc-sub">${s.subtitle}</div>
+      <div class="sc-meta">
+        <div class="sc-pages">${contentPageCount} pages</div>
+        <div class="sc-status ${statusClass}">${statusLabel}</div>
+      </div>
+      <div class="sc-progress-bar"><div class="sc-progress-fill" style="width:${unlocked ? p.pct : 0}%"></div></div>
+    </div>`;
+  }).join('');
+  return `<div class="dashboard-wrap"><div class="dashboard-inner">
+    <div class="overall-progress">
+      <div class="op-ring">
+        <svg width="72" height="72" viewBox="0 0 72 72">
+          <circle cx="36" cy="36" r="30" fill="none" stroke="#E4E4E7" stroke-width="6"/>
+          <circle cx="36" cy="36" r="30" fill="none" stroke="#0D9488" stroke-width="6"
+            stroke-dasharray="${C}" stroke-dashoffset="${dash}" stroke-linecap="round" style="transform:rotate(-90deg);transform-origin:50% 50%"/>
+        </svg>
+        <div class="op-ring-text">${total.pct}%</div>
+      </div>
+      <div class="op-info">
+        <h2>Welcome back, ${state.user ? state.user.name.split(' ')[0] : 'there'}! 👋</h2>
+        <p>${total.read} of ${total.total} pages read &nbsp;·&nbsp; ${submittedCount} of 5 sections submitted</p>
+      </div>
+    </div>
+    <div class="section-cards">${cards}</div>
+  </div></div>`;
+}
+
+function bindDashboard() {
+  document.querySelectorAll('[data-open]').forEach(el => {
+    el.addEventListener('click', () => {
+      const sId = el.dataset.open;
+      if (!isSectionUnlocked(sId)) { toast('Complete the previous section first to unlock this one.'); return; }
+      openReader(sId, 0);
+    });
+  });
+}
+
+// ═══════════════════════════════════════════════════
+//  READER
+// ═══════════════════════════════════════════════════
+
+function openReader(sectionId, pageIndex) {
+  state.view = 'reader';
+  state.reader.sectionId = sectionId;
+  state.reader.pageIndex = pageIndex;
+  const section = SECTIONS.find(s => s.id === sectionId);
+  const page = section.pages[pageIndex];
+  if (!page.type) markPageRead(sectionId, page.id);
+  render();
+}
+
+function renderReader() {
+  const section = SECTIONS.find(s => s.id === state.reader.sectionId);
+  const pageIdx = state.reader.pageIndex;
+  const page = section.pages[pageIdx];
+  const p = getSectionProgress(section.id);
+  const isHwPage = page.type === 'homework';
+  const isQuizPage = page.type === 'quiz';
+  const hwComplete = isHwPage && isHomeworkComplete(section.id);
+  const alreadySubmitted = state.progress[section.id]?.submitted;
+
+  const topbar = `<div class="topbar">
+    <div class="topbar-breadcrumb">Section ${section.num} &nbsp;·&nbsp; <strong>${page.title}</strong></div>
+    <div class="topbar-spacer"></div>
+    <div class="topbar-progress">
+      <div class="topbar-progress-label">Progress</div>
+      <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${p.pct}%"></div></div>
+      <div class="topbar-page-count">${pageIdx + 1} / ${section.pages.length}</div>
+    </div>
+  </div>`;
+
+  const content = isHwPage
+    ? `<div class="reader-wrap"><div class="reader-inner fade-in">${renderHomeworkPage(section.id)}</div></div>`
+    : isQuizPage
+    ? `<div class="reader-wrap"><div class="reader-inner fade-in">${renderQuizPage(section.id, page.quizGroupIndices)}</div></div>`
+    : `<div class="reader-wrap"><div class="reader-inner fade-in">${page.content}</div></div>`;
+
+  let navRight = '';
+  if (isHwPage) {
+    if (alreadySubmitted) {
+      navRight = `<button class="btn-nav btn-nav-primary" id="btn-finish" disabled>✓ Submitted</button>`;
+    } else {
+      navRight = `<button class="btn-nav btn-nav-primary" id="btn-submit-section" ${hwComplete ? '' : 'disabled'}>Submit Section ✓</button>`;
+    }
+  } else if (isQuizPage) {
+    navRight = `<button class="btn-nav btn-nav-primary" id="btn-next">Save & Continue →</button>`;
+  } else {
+    navRight = `<button class="btn-nav btn-nav-primary" id="btn-next">Next →</button>`;
+  }
+
+  const nav = `<div class="reader-nav">
+    <button class="btn-nav" id="btn-prev" ${pageIdx === 0 ? 'disabled' : ''}>← Previous</button>
+    <div class="nav-center">${section.title} · Page ${pageIdx + 1} of ${section.pages.length}</div>
+    ${navRight}
+  </div>`;
+
+  return topbar + content + nav;
+}
+
+function bindReader() {
+  const section = SECTIONS.find(s => s.id === state.reader.sectionId);
+  const pageIdx = state.reader.pageIndex;
+  const page = section.pages[pageIdx];
+  const isHwPage = page.type === 'homework';
+  const isQuizPage = page.type === 'quiz';
+
+  document.getElementById('btn-prev')?.addEventListener('click', () => {
+    openReader(section.id, pageIdx - 1);
+    document.querySelector('.reader-wrap')?.scrollTo(0, 0);
+  });
+  document.getElementById('btn-next')?.addEventListener('click', () => {
+    const nextPage = section.pages[pageIdx + 1];
+    if (!nextPage.type) markPageRead(section.id, nextPage.id);
+    state.reader.pageIndex = pageIdx + 1;
+    render();
+    document.querySelector('.reader-wrap')?.scrollTo(0, 0);
+  });
+  document.getElementById('btn-submit-section')?.addEventListener('click', () => {
+    if (!isHomeworkComplete(section.id)) return;
+    state.progress[section.id].submitted = true;
+    state.progress[section.id].submittedAt = new Date().toISOString();
+    saveProgress();
+    toast('Section ' + section.num + ' submitted! ✓');
+    state.view = 'home'; render();
+  });
+
+  if (isHwPage || isQuizPage) bindHomeworkForm(section.id);
+}
+
+// ═══════════════════════════════════════════════════
+//  QUIZ PAGE (inline checkpoints)
+// ═══════════════════════════════════════════════════
+
+function renderQuizPage(sectionId, groupIndices) {
+  const hw = HOMEWORK[sectionId];
+  if (!hw) return '<p>No quiz for this section.</p>';
+  const answers = (state.progress[sectionId] || {}).homework || {};
+
+  let html = `<div class="hw-wrap">
+    <div class="hw-header">
+      <h1>✅ Check Yourself</h1>
+      <p>Answer in your own words — open-book is fine. Your answers save as you type. Hit "Save & Continue" when you're ready to move on.</p>
+    </div>`;
+
+  for (const idx of groupIndices) {
+    const group = hw.groups[idx];
+    if (!group) continue;
+    html += `<div class="hw-group"><div class="hw-group-title">${group.title}</div>`;
+    for (const item of group.items) {
+      const val = answers[item.id] || '';
+      html += `<div class="hw-item">
+        <div class="hw-item-label">${item.label}</div>
+        <div class="hw-item-prompt">${item.prompt}</div>
+        <textarea class="hw-textarea hw-field" data-id="${item.id}" placeholder="Your answer...">${val}</textarea>
+      </div>`;
+    }
+    html += `</div>`;
+  }
+  html += `</div>`;
+  return html;
+}
+
+// ═══════════════════════════════════════════════════
+//  HOMEWORK PAGE
+// ═══════════════════════════════════════════════════
+
+function renderHomeworkPage(sectionId) {
+  const hw = HOMEWORK[sectionId];
+  if (!hw) return '<p>No homework for this section.</p>';
+  const prog = state.progress[sectionId] || {};
+  const answers = prog.homework || {};
+  const submitted = prog.submitted;
+  const section = SECTIONS.find(s => s.id === sectionId);
+  const hasInlineQuizzes = section && section.pages.some(p => p.type === 'quiz');
+
+  // Sections with inline quiz checkpoints get a summary+submit page instead of re-rendering all questions
+  if (hasInlineQuizzes) {
+    const allItems = hw.groups.flatMap(g => g.items);
+    const answeredCount = allItems.filter(item => answers[item.id] && String(answers[item.id]).trim()).length;
+    const totalCount = allItems.length;
+    const complete = answeredCount === totalCount;
+    return `<div class="hw-wrap">
+      <div class="hw-header">
+        <h1>📋 ${hw.title}</h1>
+        <p>${hw.intro}</p>
+        ${submitted ? '<div class="hw-submitted-badge">✓ Submitted — awaiting manager review</div>' : ''}
+      </div>
+      <div style="background:white;border:1.5px solid var(--border);border-radius:12px;padding:24px;margin-bottom:20px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+          <div style="font-size:15px;font-weight:700;">Quiz Completion</div>
+          <div style="font-size:14px;color:var(--muted);">${answeredCount} / ${totalCount} answered</div>
+        </div>
+        <div style="height:6px;background:var(--border);border-radius:99px;overflow:hidden;margin-bottom:16px;">
+          <div style="width:${Math.round(answeredCount/totalCount*100)}%;height:100%;background:${complete?'var(--success)':'var(--accent)'};border-radius:99px;transition:width 0.4s;"></div>
+        </div>
+        ${hw.groups.map(g => {
+          const done = g.items.every(item => answers[item.id] && String(answers[item.id]).trim());
+          return `<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+            <span style="font-size:14px;line-height:1;">${done ? '✅' : '⬜'}</span>
+            <span style="font-size:13px;color:${done ? 'var(--text)' : 'var(--muted)'};">${g.title} <span style="color:var(--muted);font-size:11px;">(${g.items.length} q)</span></span>
+          </div>`;
+        }).join('')}
+      </div>
+      ${!complete && !submitted ? `<div class="callout callout-warn"><div class="callout-title">Not quite done</div>Go back and finish any unanswered questions — then the Submit button will unlock.</div>` : ''}
+    </div>`;
+  }
+
+  let html = `<div class="hw-wrap">
+    <div class="hw-header">
+      <h1>📋 ${hw.title}</h1>
+      <p>${hw.intro}</p>
+      ${submitted ? '<div class="hw-submitted-badge">✓ Submitted — awaiting manager review</div>' : ''}
+    </div>`;
+
+  for (const group of hw.groups) {
+    html += `<div class="hw-group"><div class="hw-group-title">${group.title}</div>`;
+    for (const item of group.items) {
+      const val = answers[item.id] || '';
+      const valUrl = answers[item.id + '_url'] || '';
+      const valNote = answers[item.id + '_note'] || '';
+      const grades = loadGrades();
+      const repGrades = grades[state.user?.email] || {};
+      const sectionGrades = repGrades[sectionId] || {};
+      const itemGrade = sectionGrades[item.id];
+
+      html += `<div class="hw-item">
+        <div class="hw-item-label">${item.label}</div>
+        <div class="hw-item-prompt">${item.prompt}</div>`;
+
+      if (submitted) {
+        if (item.type === 'link_note') {
+          html += `<div class="hw-answer-readonly">${valUrl || '(no URL submitted)'}</div>`;
+          html += `<div class="hw-answer-readonly" style="margin-top:6px;">${valNote || '(no note submitted)'}</div>`;
+        } else {
+          html += `<div class="hw-answer-readonly">${val || '(no answer submitted)'}</div>`;
+        }
+        if (itemGrade) {
+          const stars = '★'.repeat(itemGrade.score) + '☆'.repeat(5 - itemGrade.score);
+          html += `<div class="hw-feedback-block"><strong>Manager feedback</strong>${stars} &nbsp;${itemGrade.feedback || ''}</div>`;
+        }
+      } else {
+        if (item.type === 'loom') {
+          html += `<input type="url" class="hw-input hw-field" data-id="${item.id}" placeholder="https://www.loom.com/share/..." value="${val}">`;
+        } else if (item.type === 'quiz') {
+          html += `<textarea class="hw-textarea hw-field" data-id="${item.id}" placeholder="Your answer...">${val}</textarea>`;
+        } else if (item.type === 'link_note') {
+          html += `<div class="hw-link-note">
+            <input type="url" class="hw-input hw-field" data-id="${item.id}_url" placeholder="https://..." value="${valUrl}">
+            <textarea class="hw-textarea hw-field" data-id="${item.id}_note" placeholder="1–2 sentence note on why you chose it and how it highlights this feature..." style="min-height:60px;">${valNote}</textarea>
+          </div>`;
+        } else if (item.type === 'textarea') {
+          html += `<textarea class="hw-textarea hw-field" data-id="${item.id}" placeholder="Your notes..." style="min-height:100px;">${val}</textarea>`;
+        }
+      }
+      html += `</div>`;
+    }
+    html += `</div>`;
+  }
+  html += `</div>`;
+  return html;
+}
+
+function bindHomeworkForm(sectionId) {
+  document.querySelectorAll('.hw-field').forEach(field => {
+    field.addEventListener('input', () => {
+      if (!state.progress[sectionId]) state.progress[sectionId] = { readPages: [], homework: {}, submitted: false };
+      if (!state.progress[sectionId].homework) state.progress[sectionId].homework = {};
+      state.progress[sectionId].homework[field.dataset.id] = field.value;
+      saveProgress();
+      const submitBtn = document.getElementById('btn-submit-section');
+      if (submitBtn) submitBtn.disabled = !isHomeworkComplete(sectionId);
+    });
+  });
+  // Set initial button state
+  const submitBtn = document.getElementById('btn-submit-section');
+  if (submitBtn) submitBtn.disabled = !isHomeworkComplete(sectionId);
+}
+
+// ═══════════════════════════════════════════════════
+//  ADMIN
+// ═══════════════════════════════════════════════════
+
+function renderAdminGate() {
+  return `<div class="admin-gate"><div class="admin-gate-card">
+    <h2 style="font-size:20px;font-weight:700;margin-bottom:8px;">Manager View</h2>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:24px;">Enter your access code to continue.</p>
+    <div class="form-group"><label>Access code</label>
+      <input type="password" id="admin-code-inp" placeholder="••••••••" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;font-family:inherit;outline:none;">
+    </div>
+    <button class="btn-primary" id="btn-admin-enter">Enter →</button>
+    <p id="admin-error" style="color:#E11D48;font-size:12px;margin-top:10px;display:none;">Incorrect code.</p>
+  </div></div>`;
+}
+
+function renderAdminDashboard() {
+  const header = `<div class="admin-header">
+      <h1>Manager Dashboard</h1>
+      <button class="btn-sm" id="btn-back-home">← Back</button>
+    </div>`;
+
+  // Not yet fetched — trigger and show spinner
+  if (state.adminReps === null) {
+    setTimeout(() => fetchAdminReps(), 0);
+    return `<div class="admin-wrap"><div class="admin-inner">
+      ${header}
+      <div style="padding:64px;text-align:center;color:var(--muted);font-size:14px;">Loading rep data…</div>
+    </div></div>`;
+  }
+
+  const totalPages = SECTIONS.reduce((a, s) => a + s.pages.filter(p => !p.type).length, 0);
+  const rows = state.adminReps.length === 0
+    ? `<div style="padding:48px;text-align:center;color:var(--muted);font-size:14px;">No reps have started the course yet.</div>`
+    : state.adminReps.map(r => {
+        const prog = r.progress || {};
+        const completed = SECTIONS.filter(s => prog[s.id]?.submitted).length;
+        const readPages = SECTIONS.reduce((a, s) => a + (prog[s.id]?.readPages?.length || 0), 0);
+        const pct = Math.round((readPages / totalPages) * 100);
+        const status = completed === 5 ? '<span class="pill pill-green">Certified</span>'
+          : completed > 0 ? '<span class="pill pill-blue">In Progress</span>'
+          : '<span class="pill pill-gray">Not Started</span>';
+        return `<div class="rep-row" data-rep="${r.email}">
+          <div><div class="rep-name">${r.name || r.email}</div><div class="rep-email">${r.email}</div></div>
+          <div class="rep-cell">${completed} / 5</div>
+          <div class="rep-cell">${pct}%</div>
+          <div class="rep-cell">${status}</div>
+        </div>`;
+      }).join('');
+
+  return `<div class="admin-wrap"><div class="admin-inner">
+    ${header}
+    <div class="rep-table">
+      <div class="rep-table-head"><span>Rep</span><span>Sections</span><span>Progress</span><span>Status</span></div>
+      ${rows}
+    </div>
+  </div></div>`;
+}
+
+function getRepName(email) {
+  // Try server data first, then current user, then derive from email
+  if (state.adminReps) {
+    const rep = state.adminReps.find(r => r.email === email);
+    if (rep && rep.name) return rep.name;
+  }
+  try {
+    const user = JSON.parse(localStorage.getItem('skio_user'));
+    if (user && user.email === email) return user.name;
+  } catch(e) {}
+  return email.split('@')[0];
+}
+
+function renderRepGradeView() {
+  const email = state.adminRepEmail;
+
+  // Not yet fetched — trigger and show spinner
+  if (!state.adminRepData) {
+    setTimeout(() => fetchRepData(email), 0);
+    const name = email ? email.split('@')[0] : '…';
+    return `<div class="admin-wrap"><div class="admin-inner">
+      <div class="admin-header">
+        <div><h1>Grading: ${name}</h1><div style="font-size:13px;color:var(--muted);margin-top:2px;">${email}</div></div>
+        <button class="btn-sm" id="btn-back-list">← All Reps</button>
+      </div>
+      <div style="padding:64px;text-align:center;color:var(--muted);font-size:14px;">Loading rep data…</div>
+    </div></div>`;
+  }
+
+  const prog = state.adminRepData.progress || {};
+  const grades = loadGrades();
+  const repGrades = grades[email] || {};
+  const name = getRepName(email);
+
+  let html = `<div class="admin-wrap"><div class="admin-inner">
+    <div class="admin-header">
+      <div><h1>Grading: ${name}</h1><div style="font-size:13px;color:var(--muted);margin-top:2px;">${email}</div></div>
+      <button class="btn-sm" id="btn-back-list">← All Reps</button>
+    </div>`;
+
+  SECTIONS.forEach(section => {
+    const secProg = prog[section.id] || {};
+    const hw = HOMEWORK[section.id];
+    if (!secProg.submitted || !hw) return;
+    const secAnswers = secProg.homework || {};
+    const secGrades = repGrades[section.id] || {};
+
+    html += `<div class="grade-section">
+      <div class="grade-section-header">
+        <h3>Section ${section.num}: ${section.title}</h3>
+        <div style="display:flex;gap:8px;align-items:center;">
+          ${secGrades.approved ? '<span class="pill pill-green">Approved</span>' : '<span class="pill pill-gray">Pending</span>'}
+          <button class="btn-sm btn-sm-primary" data-approve="${section.id}" style="font-size:12px;padding:5px 12px;">${secGrades.approved ? '✓ Approved' : 'Approve Section'}</button>
+        </div>
+      </div>`;
+
+    hw.groups.forEach(group => {
+      html += `<div style="margin-bottom:12px;"><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--accent);margin-bottom:10px;">${group.title}</div>`;
+      group.items.forEach(item => {
+        const answer = item.type === 'link_note'
+          ? [(secAnswers[item.id + '_url'] || ''), (secAnswers[item.id + '_note'] || '')].filter(Boolean).join('\n')
+          : (secAnswers[item.id] || '');
+        const ig = secGrades[item.id] || {};
+        html += `<div class="qa-item">
+          <div class="qa-question">${item.label}: ${item.prompt}</div>
+          <div class="qa-answer">${answer || '(no answer)'}</div>
+          <div class="qa-grade-row">
+            <div class="star-row" data-sid="${section.id}" data-iid="${item.id}">
+              ${[1,2,3,4,5].map(n => `<span class="star ${(ig.score||0) >= n ? 'on' : ''}" data-val="${n}">★</span>`).join('')}
+            </div>
+            <input class="grade-note" type="text" placeholder="Feedback (optional)" value="${ig.feedback||''}" data-sid="${section.id}" data-iid="${item.id}">
+          </div>
+        </div>`;
+      });
+      html += `</div>`;
+    });
+    html += `</div>`;
+  });
+
+  html += `</div></div>`;
+  return html;
+}
+
+function bindAdmin() {
+  // Gate
+  document.getElementById('btn-admin-enter')?.addEventListener('click', () => {
+    const code = document.getElementById('admin-code-inp')?.value;
+    if (code === ADMIN_CODE) { state.adminAuthed = true; state.adminView = 'list'; state.adminReps = null; render(); }
+    else { document.getElementById('admin-error').style.display = 'block'; }
+  });
+  document.getElementById('admin-code-inp')?.addEventListener('keydown', e => {
+    if (e.key === 'Enter') document.getElementById('btn-admin-enter')?.click();
+  });
+  // Back buttons
+  document.getElementById('btn-back-home')?.addEventListener('click', () => { state.view = 'home'; render(); });
+  document.getElementById('btn-back-list')?.addEventListener('click', () => { state.adminView = 'list'; render(); });
+  // Rep rows — clear cached rep data so fetchRepData fires fresh
+  document.querySelectorAll('.rep-row[data-rep]').forEach(el => {
+    el.addEventListener('click', () => {
+      state.adminRepEmail = el.dataset.rep;
+      state.adminRepData = null;
+      state.adminView = 'rep'; render();
+    });
+  });
+}
+
+function bindRepGradeView() {
+  const email = state.adminRepEmail;
+  const grades = loadGrades();
+  if (!grades[email]) grades[email] = {};
+
+  // Stars
+  document.querySelectorAll('.star-row').forEach(row => {
+    row.querySelectorAll('.star').forEach(star => {
+      star.addEventListener('click', () => {
+        const sid = row.dataset.sid, iid = row.dataset.iid, val = parseInt(star.dataset.val);
+        if (!grades[email][sid]) grades[email][sid] = {};
+        if (!grades[email][sid][iid]) grades[email][sid][iid] = {};
+        grades[email][sid][iid].score = val;
+        saveGrades(grades);
+        row.querySelectorAll('.star').forEach((s, i) => s.classList.toggle('on', i < val));
+      });
+    });
+  });
+
+  // Feedback notes
+  document.querySelectorAll('.grade-note').forEach(inp => {
+    inp.addEventListener('change', () => {
+      const sid = inp.dataset.sid, iid = inp.dataset.iid;
+      if (!grades[email][sid]) grades[email][sid] = {};
+      if (!grades[email][sid][iid]) grades[email][sid][iid] = {};
+      grades[email][sid][iid].feedback = inp.value;
+      saveGrades(grades);
+    });
+  });
+
+  // Approve buttons
+  document.querySelectorAll('[data-approve]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const sid = btn.dataset.approve;
+      if (!grades[email][sid]) grades[email][sid] = {};
+      grades[email][sid].approved = !grades[email][sid].approved;
+      saveGrades(grades);
+      render();
+    });
+  });
+}
+
+// ═══════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════
+
+loadUser();
+if (state.user) {
+  loadProgress(); initProgress(); state.view = 'home';
+  syncProgressFromServer(state.user.email); // async — re-renders if server has newer data
+}
+render();
+</script>
+</body>
+</html>
