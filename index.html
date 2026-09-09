@@ -452,7 +452,7 @@ const SECTIONS = [
       <p class="page-subtitle">This is your reference — what each feature actually does, how it's set up, and where its limits are. The next section (The Demo) covers how to show this; this section is what you reach for when a prospect asks something off-script and you need the real answer.</p>
       <p>This section provides an in-depth overview of the different product categories inside the Skio platform. For specific technical questions, try using #ask-echo in Slack and then ask a SE.</p>
       <p>The section is organized the way Skio itself is — by <strong>Acquisition</strong> (getting new subscribers) and <strong>Retention</strong> (keeping them). Skio's own dashboard splits into an Acquire and a Retain menu, so this mirrors what you'll see on screen.</p>
-      <div class="callout callout-warn"><div class="callout-title">⚠️ Be honest about limits</div>This section names what Skio does NOT do (in-cart upsells, widget A/B testing, etc.). Knowing the gaps cold makes you more credible, not less — and stops you from promising something in a demo that the product can't deliver.</div>
+      <div class="callout callout-warn"><div class="callout-title">⚠️ Be honest about limits</div>This section names what Skio does NOT do (post-purchase upsells, widget A/B testing, etc.). Knowing the gaps cold makes you more credible, not less — and stops you from promising something in a demo that the product can't deliver.</div>
       <h2>🔵 Acquisition: getting new subscribers</h2>
       <ul><li>The Subscription Widget (PDP)</li><li>Bundles / Build-a-Bundle</li><li>Checkout Link Builder</li></ul>
       <h2>🟢 Retention: keeping subscribers</h2>
@@ -467,8 +467,17 @@ const SECTIONS = [
         <li><strong>Want something brand-new/different?</strong> That's on the merchant to design and build — Skio's team matches an existing widget, it doesn't design net-new custom ones for you.</li>
         <li><strong>Setup works just like Recharge.</strong> You create selling plans, attach them to products, and use Shopify's theme editor + app block configuration to place the widget on the storefront. Reps who know the Recharge flow already know this.</li>
       </ul>
-      <div class="callout callout-warn"><div class="callout-title">⚠️ Upsell limits — know these cold</div>Skio supports <strong>checkout upsells</strong> via Shopify's checkout extensions.<br><br>Skio does <strong>NOT</strong> currently support in-cart upsells or post-purchase upsells (Recharge does). If a prospect needs cart or post-purchase upsell today, that's a genuine gap — don't imply otherwise in a demo.</div>
-      <div class="callout callout-dark"><div class="callout-title">A/B testing the widget: Skio does not have this</div>If the merchant asks, use this reframe: "We looked into A/B testing the widget pretty deeply as we enhanced our tech. The problem with testing price on the widget is you'd have two customers on the same site — one sees $39, one sees $34 — and neither converts because they don't trust the price. What we do instead is segmentation: take that same test, apply it to a defined cohort, let it run, and measure against your baseline. You get the data without undermining your brand."</div>
+      <h2>🔵 Acquisition · The Component Library</h2>
+      <p>Skio's Component Library is a set of <strong>pre-built, customizable widgets to help you grow your subscription program</strong> — beyond just the PDP widget. Think of it as a toolkit of acquisition touchpoints you can deploy across the storefront without custom dev work.</p>
+      <p>Current components include:</p>
+      <ul>
+        <li><strong>Subscription Widget</strong> — the core PDP subscribe-and-save selector (covered above)</li>
+        <li><strong>Collection Page Upsell</strong> — surfaces subscription options on browse/collection pages, before the customer even hits a PDP</li>
+        <li><strong>Cart Upsell</strong> — prompts a one-time buyer in the cart to switch to a subscription and save (Skio now supports this natively — a recent addition)</li>
+        <li><strong>"Add to Subscription" Upsell</strong> — for logged-in subscribers, lets them add a product to an existing subscription from anywhere on the storefront; no portal visit required</li>
+      </ul>
+      <div class="callout callout-success"><div class="callout-title">✅ Upsell coverage — updated</div>Skio now supports <strong>checkout upsells</strong> (via Shopify's checkout extensions) <strong>and in-cart upsells</strong> via the Component Library.<br><br>The one genuine gap that remains: <strong>post-purchase upsells</strong> (Recharge supports these; Skio does not). If a prospect specifically needs post-purchase, flag it honestly — don't imply otherwise in a demo.</div>
+      <div class="callout callout-dark"><div class="callout-title">A/B testing the widget — context before you use this</div>This reframe is most relevant when you're speaking to a merchant who has <em>already used Recharge</em> and specifically asks about widget A/B testing. It's unlikely to come up cold with a net-new prospect — don't introduce it unprompted.<br><br>If it does come up: "We looked into A/B testing the widget pretty deeply as we enhanced our tech. The problem with testing price on the widget is you'd have two customers on the same site — one sees $39, one sees $34 — and neither converts because they don't trust the price. What we do instead is segmentation: take that same test, apply it to a defined cohort, let it run, and measure against your baseline. You get the data without undermining your brand."</div>
 `},
     { id:'s2q1', type:'quiz', title:'Check Yourself · Widget', quizGroupIndices:[0] },
     { id:'s2p3', title:'Bundles & Checkout Links', content:`
@@ -567,7 +576,9 @@ const SECTIONS = [
     { id:'s2q5', type:'quiz', title:'Check Yourself · Cancel Flows', quizGroupIndices:[6] },
     { id:'s2p7', title:'Journeys', content:`
       <h2>🟢 Retention · Journeys</h2>
+      <div class="callout callout-accent"><div class="callout-title">💰 The money-maker moment</div>Journeys is the feature that consistently gets the strongest reaction in demos and pitches. Lead with it when you want to make something click that nothing else in the deck can. The pitch in one line: <strong>Journeys replaces what merchants used to need a developer, an API, and a webhook setup to accomplish — and turns it into a two-minute drag-and-drop build.</strong><br><br>For any merchant who has ever said "we'd love to do X but we'd need dev resources to build it" — this is the answer. Show it live, build one on the call, and let the reaction speak for itself.</div>
       <p>Journeys is Skio's visual workflow builder — a drag-and-drop way to automate subscription changes across the customer lifecycle. You build "if this, then that" logic that responds to real-time events (an order placed, a product added, a billing date changed), with no code and deep integrations like Klaviyo.</p>
+      <p>Under the hood, Journeys is essentially a <strong>no-code interface for API calls and webhooks</strong>. Anything a developer would have wired up manually — listen for an event, check a condition, fire an action — Journeys does visually, with no engineering involvement after the initial setup. Custom subscription workflows that used to take sprint cycles now take minutes.</p>
       <h3>How it works — three node types</h3>
       <ul>
         <li><strong>Trigger node</strong> — when the Journey begins (e.g., after an order, after a product change).</li>
@@ -803,7 +814,7 @@ const SECTIONS = [
 `},
     { id:'s5p2', title:'Capstone Rubric', content:`
       <h2>Capstone: the Certified Demo</h2>
-      <p>Run a full, recorded mock demo against your demo store to a peer or manager, following the Demo run-sheet. Handle at least two live objections (e.g. "Does it do in-cart upsells?", "What's the difference vs. Recharge?", "How does migration work?"). <strong>Score at least 20 / 25 on the rubric below to pass.</strong></p>
+      <p>Run a full, recorded mock demo against your demo store to a peer or manager, following the Demo run-sheet. Handle at least two live objections (e.g. "Does it do post-purchase upsells?", "What's the difference vs. Recharge?", "How does migration work?"). <strong>Score at least 20 / 25 on the rubric below to pass.</strong></p>
       <div style="background:var(--white);border:1.5px solid var(--border);border-radius:14px;overflow:hidden;margin-top:20px;">
         <div style="padding:15px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;"><div style="font-size:14px;font-weight:600;">Opened with the talk track and framed Skio as "us," not a separate company.</div><div style="font-size:13px;color:var(--muted);font-family:var(--serif);">/ 5</div></div>
         <div style="padding:15px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;"><div style="font-size:14px;font-weight:600;">Navigated the product live without fumbling.</div><div style="font-size:13px;color:var(--muted);font-family:var(--serif);">/ 5</div></div>
