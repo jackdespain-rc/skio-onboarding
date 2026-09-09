@@ -235,6 +235,27 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 /* Animations */
 .fade-in { animation: fadeIn 0.2s ease; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+/* ── Lightbox ───────────────────────────────────────── */
+#lightbox-overlay {
+  display: none; position: fixed; inset: 0; z-index: 9999;
+  background: rgba(0,0,0,0.82); backdrop-filter: blur(6px);
+  align-items: center; justify-content: center; cursor: zoom-out;
+}
+#lightbox-overlay.open { display: flex; }
+#lightbox-overlay img {
+  max-width: 92vw; max-height: 90vh;
+  border-radius: 14px; box-shadow: 0 24px 80px rgba(0,0,0,0.5);
+  object-fit: contain; cursor: default;
+}
+#lightbox-close {
+  position: absolute; top: 20px; right: 24px;
+  color: #fff; font-size: 28px; line-height: 1;
+  cursor: pointer; opacity: 0.7; transition: opacity .15s;
+  background: none; border: none; font-family: inherit;
+}
+#lightbox-close:hover { opacity: 1; }
+.expandable-img { transition: opacity .15s; }
+.expandable-img:hover { opacity: .88; }
 </style>
 </head>
 <body>
@@ -557,6 +578,16 @@ const SECTIONS = [
       <h2>🟢 Retention · Customer Portal (CPv3)</h2>
       <p>The customer portal is where subscribers manage their accounts. Just as Recharge has Affinity v1 and v2, Skio has evolved through CPv1, CPv2, and CPv3. We focus on CPv3, the current portal. It's a real-time drag-and-drop builder: you control the branding, which actions customers can take, and how everything is laid out.</p>
       <h3>What's new in v3</h3>
+      <div style="display:flex;gap:16px;margin:16px 0 20px;flex-wrap:wrap;">
+        <div style="flex:1;min-width:180px;text-align:center;">
+          <img src="images/card-based-view.png" alt="CPv3 card-based subscription view" class="expandable-img" style="width:100%;border-radius:12px;border:1.5px solid var(--border);box-shadow:0 4px 16px rgba(0,0,0,0.08);cursor:zoom-in;">
+          <p style="font-size:11px;color:var(--muted);margin-top:6px;">Card-based subscription view</p>
+        </div>
+        <div style="flex:1;min-width:180px;text-align:center;">
+          <img src="images/cpv3.png" alt="CPv3 customer portal" class="expandable-img" style="width:100%;border-radius:12px;border:1.5px solid var(--border);box-shadow:0 4px 16px rgba(0,0,0,0.08);cursor:zoom-in;">
+          <p style="font-size:11px;color:var(--muted);margin-top:6px;">Inside a subscription (CPv3)</p>
+        </div>
+      </div>
       <ul>
         <li><strong>Card-based subscription view.</strong> Customers with more than one subscription see them all in a scannable 2×2 card grid instead of a long vertical list. Customers with a single subscription are taken straight to that subscription when they open the portal.</li>
         <li><strong>Simplified action buttons.</strong> Key actions appear as prominent buttons at the top of each subscription (Get now, Skip, and a "More" menu for additional actions) instead of hunting through the interface.</li>
@@ -672,6 +703,10 @@ const SECTIONS = [
         <li><strong>Credits</strong> — redeemable store credit for purchases and brand interactions. Preserves margin vs. blanket discounts.</li>
         <li><strong>Referrals</strong> — turn your best customers into a growth channel with rewards for both the referrer and the new customer.</li>
       </ul>
+      <div style="margin:16px 0 4px;text-align:center;">
+        <img src="images/rewards-page.png" alt="Skio Loyalty rewards page" class="expandable-img" style="width:100%;border-radius:12px;border:1.5px solid var(--border);box-shadow:0 4px 16px rgba(0,0,0,0.08);cursor:zoom-in;">
+        <p style="font-size:11px;color:var(--muted);margin-top:6px;">Loyalty rewards page — tiers, credits &amp; referrals</p>
+      </div>
       <hr style="border:none;border-top:1px solid var(--border);margin:28px 0;">
       <h2>🟢 Retention · SkioSMS</h2>
       <p>SkioSMS is Skio's built-in transactional SMS and subscription-management tool. It does two jobs:</p>
@@ -1653,6 +1688,40 @@ if (state.user) {
   syncProgressFromServer(state.user.email); // async — re-renders if server has newer data
 }
 render();
+
+// ── Lightbox ─────────────────────────────────────────────────────────────────
+(function() {
+  // Inject overlay DOM once
+  const overlay = document.createElement('div');
+  overlay.id = 'lightbox-overlay';
+  overlay.innerHTML = '<button id="lightbox-close" aria-label="Close">✕</button><img id="lightbox-img" src="" alt="">';
+  document.body.appendChild(overlay);
+
+  const lbImg = document.getElementById('lightbox-img');
+
+  function openLightbox(src, alt) {
+    lbImg.src = src; lbImg.alt = alt || '';
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLightbox() {
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+    lbImg.src = '';
+  }
+
+  // Close on overlay background or ✕ button
+  overlay.addEventListener('click', e => { if (e.target !== lbImg) closeLightbox(); });
+  document.getElementById('lightbox-close').addEventListener('click', closeLightbox);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+  // Delegate clicks on .expandable-img — works even after re-renders
+  document.addEventListener('click', e => {
+    if (e.target.classList.contains('expandable-img')) {
+      openLightbox(e.target.src, e.target.alt);
+    }
+  });
+})();
 </script>
 </body>
 </html>
