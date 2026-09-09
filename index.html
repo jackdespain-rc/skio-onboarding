@@ -514,14 +514,32 @@ const SECTIONS = [
 `},
     { id:'s2q1', type:'quiz', title:'Check Yourself · Widget', quizGroupIndices:[0] },
     { id:'s2p3', title:'Bundles & Checkout Links', content:`
-      <h2>🔵 Acquisition · Bundles / Build-a-Bundle</h2>
-      <p>Skio has a native build-a-bundle — no third-party app required. Two turnkey types:</p>
-      <ul>
-        <li><strong>Static bundles,</strong> fixed-price bundles (a set number of products at one price).</li>
-        <li><strong>Dynamic bundles,</strong> "buy more, save more" volume logic where the price and discount both scale up as products are added, and back down as they're removed.</li>
-      </ul>
-      <p>Both are out-of-the-box. This is a differentiator — dynamic/volume bundling is something competitors have struggled to deliver (Aloha moved to Skio for this specifically).</p>
-      <p><strong>See examples:</strong> Aloha, WeHeartNutrition</p>
+      <h2>🔵 Acquisition · Bundles / Build-a-Box</h2>
+      <p>Skio has a native Build-a-Box — no third-party app required. Four box types, all out-of-the-box:</p>
+      <div style="display:grid;gap:12px;margin:20px 0;">
+        <div style="background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:16px 20px;">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--accent);margin-bottom:6px;">Box Type 1</div>
+          <div style="font-weight:700;font-size:15px;margin-bottom:4px;">Dynamic Box — Quantity Based</div>
+          <div style="font-size:13px;color:var(--muted);">Buy more items, save more. The discount scales up as a subscriber adds products and scales back down if they remove them. Classic "buy more, save more" volume logic.</div>
+        </div>
+        <div style="background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:16px 20px;">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--accent);margin-bottom:6px;">Box Type 2</div>
+          <div style="font-weight:700;font-size:15px;margin-bottom:4px;">Dynamic Box — Price Based</div>
+          <div style="font-size:13px;color:var(--muted);">Spend more money, save more. Discount tiers are triggered by cart value rather than item count — rewards customers for increasing their order value.</div>
+        </div>
+        <div style="background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:16px 20px;">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--accent);margin-bottom:6px;">Box Type 3</div>
+          <div style="font-weight:700;font-size:15px;margin-bottom:4px;">Static Box</div>
+          <div style="font-size:13px;color:var(--muted);">Fixed product counts tied to fixed prices. For example: 4 items for $10, 6 items for $12. Simple, predictable pricing — best for brands that want structured tier options without dynamic scaling.</div>
+        </div>
+        <div style="background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:16px 20px;">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--accent);margin-bottom:6px;">Box Type 4</div>
+          <div style="font-weight:700;font-size:15px;margin-bottom:4px;">Sectioned Box</div>
+          <div style="font-size:13px;color:var(--muted);">Groups of dynamic boxes organized by product catalog or category. Customers choose X items from this collection, Y items from that collection. Think "build your own starter kit" — pick 2 proteins, 2 greens, 1 recovery.</div>
+        </div>
+      </div>
+      <div style="margin:24px 0;"><img src="images/build-a-box-types.png" alt="Skio Build-a-Box types" style="width:100%;border-radius:12px;border:1.5px solid var(--border);box-shadow:0 4px 20px rgba(0,0,0,0.08);"></div>
+      <div class="callout callout-success"><div class="callout-title">💡 Why this wins deals</div>Dynamic/volume bundling is something competitors have struggled to deliver. Aloha went through 3 agencies and 3 failed builds elsewhere before moving to Skio for this specifically. Mozy moved for the same reason. When a brand with a multi-SKU catalog hears this, it lands.<br><br><strong>See it live:</strong> Aloha · WeHeartNutrition · Just Ingredients · Bulletproof Coffee</div>
       <hr style="border:none;border-top:1px solid var(--border);margin:28px 0;">
       <h2>🔵 Acquisition · Checkout Link Builder</h2>
       <p>Found under the <strong>Acquire</strong> dropdown in the Skio dashboard. It generates prefilled, direct-to-checkout links: you add one or more products, set quantities, and optionally apply a discount code, and Skio produces a single URL that drops the shopper straight into Shopify checkout with the right product and selling plan already attached.</p>
