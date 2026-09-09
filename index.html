@@ -254,8 +254,8 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
   background: none; border: none; font-family: inherit;
 }
 #lightbox-close:hover { opacity: 1; }
-.expandable-img { transition: opacity .15s; }
-.expandable-img:hover { opacity: .88; }
+.reader-inner img, .expandable-img { transition: opacity .15s; cursor: zoom-in; }
+.reader-inner img:hover, .expandable-img:hover { opacity: .88; }
 </style>
 </head>
 <body>
@@ -1725,9 +1725,9 @@ render();
   document.getElementById('lightbox-close').addEventListener('click', closeLightbox);
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
 
-  // Delegate clicks on .expandable-img — works even after re-renders
+  // Trigger on any img click — works even after re-renders
   document.addEventListener('click', e => {
-    if (e.target.classList.contains('expandable-img')) {
+    if (e.target.tagName === 'IMG' && e.target.src) {
       openLightbox(e.target.src, e.target.alt);
     }
   });
