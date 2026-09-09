@@ -666,10 +666,27 @@ const SECTIONS = [
       </div>
       <div class="callout callout-success"><div class="callout-title">📊 Impact worth quoting</div>Adding a splash screen alone has reduced cancellations by ~18% for some merchants.</div>
       <h2>🟢 Retention · Cancellation Flows</h2>
-      <p>The cancel flow is the sequence a subscriber hits when they click "cancel" — one of Skio's strongest retention surfaces. You can run different flows for different segments (e.g., new vs. long-term subscribers), with built-in conflict resolution so when a customer qualifies for more than one flow, the right flow always wins.</p>
-      <h3>The node types:</h3>
+      <div class="callout callout-accent"><div class="callout-title">✅ Good news for Recharge reps — this will feel familiar</div>Skio's cancel flow works the same way as Recharge's. Same logic, same structure — just more powerful. If you've built a cancel flow in Recharge before, you already understand this. The upgrades are the depth of segmentation, the A/B testing at the flow level, and the visual builder.</div>
+      <p>The cancel flow is triggered the moment a subscriber clicks "Cancel." Here's how the logic runs:</p>
+      <ol>
+        <li><strong>Cancellation action triggers the flow.</strong> The subscriber clicks cancel in the portal — this kicks off the sequence.</li>
+        <li><strong>Conditions filter the customer.</strong> Before anything is shown, Skio checks which flow this customer should see based on rules you define — order count, LTV, product, segment, and more. If they qualify for multiple flows, conflict resolution picks the right one automatically.</li>
+        <li><strong>Cancellation reason is presented.</strong> The customer picks why they're canceling from a set of randomized reasons you configure.</li>
+        <li><strong>Treatment is served based on their reason.</strong> The right retention offer fires — a discount, a pause, a skip, a swap — matched to what they chose.</li>
+      </ol>
+      <div style="display:flex;gap:16px;margin:20px 0;flex-wrap:wrap;align-items:flex-start;">
+        <div style="flex:1;min-width:200px;text-align:center;">
+          <img src="images/condition-cancel.png" alt="Cancel flow conditions" class="expandable-img" style="width:100%;border-radius:12px;border:1.5px solid var(--border);box-shadow:0 4px 16px rgba(0,0,0,0.08);cursor:zoom-in;">
+          <p style="font-size:11px;color:var(--muted);margin-top:6px;">Step 2 — Conditions filter which flow the customer enters</p>
+        </div>
+        <div style="flex:1;min-width:200px;text-align:center;">
+          <img src="images/reason-treatment.png" alt="Cancellation reason and treatment" class="expandable-img" style="width:100%;border-radius:12px;border:1.5px solid var(--border);box-shadow:0 4px 16px rgba(0,0,0,0.08);cursor:zoom-in;">
+          <p style="font-size:11px;color:var(--muted);margin-top:6px;">Steps 3 &amp; 4 — Reason selected → treatment served</p>
+        </div>
+      </div>
+      <h3>Node types (the building blocks):</h3>
       <ul>
-        <li><strong>Splash Screen:</strong> the "Before you go" modal; sits ahead of the main flow.</li>
+        <li><strong>Splash Screen:</strong> the "Before you go" modal; sits ahead of the main flow — covered on the previous page.</li>
         <li><strong>Cancellation Reason:</strong> selectable reasons a customer can pick; randomized on entry.</li>
         <li><strong>Treatment:</strong> the retention offer shown based on the selected reason (discount, pause, skip next order, etc.).</li>
         <li><strong>Split Treatments:</strong> randomly split customers between different treatment paths to test strategies.</li>
