@@ -453,10 +453,32 @@ const SECTIONS = [
       <p>This section provides an in-depth overview of the different product categories inside the Skio platform. For specific technical questions, try using #ask-echo in Slack and then ask a SE.</p>
       <p>The section is organized the way Skio itself is — by <strong>Acquisition</strong> (getting new subscribers) and <strong>Retention</strong> (keeping them). Skio's own dashboard splits into an Acquire and a Retain menu, so this mirrors what you'll see on screen.</p>
       <div class="callout callout-warn"><div class="callout-title">⚠️ Be honest about limits</div>This section names what Skio does NOT do (post-purchase upsells, widget A/B testing, etc.). Knowing the gaps cold makes you more credible, not less — and stops you from promising something in a demo that the product can't deliver.</div>
-      <h2>🔵 Acquisition: getting new subscribers</h2>
-      <ul><li>The Subscription Widget (PDP)</li><li>Bundles / Build-a-Bundle</li><li>Checkout Link Builder</li></ul>
-      <h2>🟢 Retention: keeping subscribers</h2>
-      <ul><li>Customer Portal (CPv3)</li><li>Backup Payment Methods</li><li>Payment Recovery (Dunning)</li><li>Splash Screens &amp; Cancellation Flows</li><li>Journeys</li><li>Segments</li><li>Loyalty</li><li>Winbacks · SkioSMS · Analytics &amp; Reporting · Email Notifications</li></ul>
+      <div style="display:flex;gap:36px;align-items:flex-start;flex-wrap:wrap;">
+        <div style="flex:1;min-width:260px;">
+          <h2 style="margin-top:0;">🔵 Acquisition: getting new subscribers</h2>
+          <ul>
+            <li>The Subscription Widget (PDP)</li>
+            <li>Bundles / Build-a-Bundle</li>
+            <li>Checkout Link Builder</li>
+            <li><strong>Component Library</strong> — Cart &amp; Checkout Upsells</li>
+          </ul>
+          <h2>🟢 Retention: keeping subscribers</h2>
+          <ul>
+            <li>Customer Portal (CPv3)</li>
+            <li>Backup Payment Methods</li>
+            <li>Payment Recovery (Dunning)</li>
+            <li>Splash Screens &amp; Cancellation Flows</li>
+            <li>Loyalty</li>
+            <li>Journeys</li>
+            <li>Segments</li>
+            <li>Winbacks · SkioSMS · Analytics &amp; Reporting · Email Notifications</li>
+          </ul>
+        </div>
+        <div style="flex:0 0 300px;min-width:220px;">
+          <img src="images/component-library.png" alt="Skio Component Library" style="width:100%;border-radius:12px;border:1.5px solid var(--border);box-shadow:0 4px 20px rgba(0,0,0,0.08);">
+          <p style="font-size:11px;color:var(--muted);margin-top:8px;text-align:center;">Skio Component Library — pre-built, customizable widgets</p>
+        </div>
+      </div>
 `},
     { id:'s2p2', title:'Subscription Widget', content:`
       <h2>🔵 Acquisition · The Subscription Widget (PDP)</h2>
@@ -467,6 +489,16 @@ const SECTIONS = [
         <li><strong>Want something brand-new/different?</strong> That's on the merchant to design and build — Skio's team matches an existing widget, it doesn't design net-new custom ones for you.</li>
         <li><strong>Setup works just like Recharge.</strong> You create selling plans, attach them to products, and use Shopify's theme editor + app block configuration to place the widget on the storefront. Reps who know the Recharge flow already know this.</li>
       </ul>
+      <div style="display:flex;gap:16px;margin:24px 0;flex-wrap:wrap;">
+        <div style="flex:1;min-width:200px;text-align:center;">
+          <img src="images/widget-turnkey.png" alt="Turnkey subscription widget" style="width:100%;max-width:280px;border-radius:12px;border:1.5px solid var(--border);box-shadow:0 4px 16px rgba(0,0,0,0.08);">
+          <p style="font-size:12px;color:var(--muted);margin-top:8px;font-weight:600;">Out-of-the-box widget</p>
+        </div>
+        <div style="flex:1;min-width:200px;text-align:center;">
+          <img src="images/widget-gruns.png" alt="Custom widget — Grüns" style="width:100%;max-width:280px;border-radius:12px;border:1.5px solid var(--border);box-shadow:0 4px 16px rgba(0,0,0,0.08);">
+          <p style="font-size:12px;color:var(--muted);margin-top:8px;font-weight:600;">Custom widget — Grüns</p>
+        </div>
+      </div>
       <h2>🔵 Acquisition · The Component Library</h2>
       <p>Skio's Component Library is a set of <strong>pre-built, customizable widgets to help you grow your subscription program</strong> — beyond just the PDP widget. Think of it as a toolkit of acquisition touchpoints you can deploy across the storefront without custom dev work.</p>
       <p>Current components include:</p>
@@ -476,6 +508,7 @@ const SECTIONS = [
         <li><strong>Cart Upsell</strong> — prompts a one-time buyer in the cart to switch to a subscription and save (Skio now supports this natively — a recent addition)</li>
         <li><strong>"Add to Subscription" Upsell</strong> — for logged-in subscribers, lets them add a product to an existing subscription from anywhere on the storefront; no portal visit required</li>
       </ul>
+      <div style="margin:20px 0;"><img src="images/component-library.png" alt="Skio Component Library" style="width:100%;border-radius:12px;border:1.5px solid var(--border);box-shadow:0 4px 20px rgba(0,0,0,0.08);"></div>
       <div class="callout callout-success"><div class="callout-title">✅ Upsell coverage — updated</div>Skio now supports <strong>checkout upsells</strong> (via Shopify's checkout extensions) <strong>and in-cart upsells</strong> via the Component Library.<br><br>The one genuine gap that remains: <strong>post-purchase upsells</strong> (Recharge supports these; Skio does not). If a prospect specifically needs post-purchase, flag it honestly — don't imply otherwise in a demo.</div>
       <div class="callout callout-dark"><div class="callout-title">A/B testing the widget — context before you use this</div>This reframe is most relevant when you're speaking to a merchant who has <em>already used Recharge</em> and specifically asks about widget A/B testing. It's unlikely to come up cold with a net-new prospect — don't introduce it unprompted.<br><br>If it does come up: "We looked into A/B testing the widget pretty deeply as we enhanced our tech. The problem with testing price on the widget is you'd have two customers on the same site — one sees $39, one sees $34 — and neither converts because they don't trust the price. What we do instead is segmentation: take that same test, apply it to a defined cohort, let it run, and measure against your baseline. You get the data without undermining your brand."</div>
 `},
