@@ -856,7 +856,50 @@ const SECTIONS = [
 `},
     { id:'s3p4', title:'Steps 5–7: Journeys + Cancel', content:`
       <h2>5. Journeys</h2>
-      <p>A money moment — build one live on the call. The key is to uncover what part of their current subscription program a Journey can simplify. Common patterns: Welcome kit → refill (great for supplements) · High-discount order 1 → change discount on order 2 · Increasing discounts over time.</p>
+      <p>A money moment — build one live on the call. The key is to uncover what part of their current subscription program a Journey can simplify. <strong>This is where pattern recognition wins deals.</strong> The rep who can hear a merchant describe their program and immediately say "that's a Journey" — and then build it in two minutes — closes. The rep who fumbles in the builder loses the moment entirely.</p>
+      <div class="callout callout-warn"><div class="callout-title">🛠️ Build these in your demo store first</div>Don't wait until your capstone to get comfortable in the Journey builder. Go build all four use cases below in your demo store today. The goal isn't just to know what Journeys does — it's to know exactly which nodes to reach for when a merchant describes their problem. That's the pattern recognition that makes the live build feel effortless.</div>
+      <h3>Common patterns — know these cold:</h3>
+      <div style="display:grid;gap:10px;margin:16px 0;">
+        <div style="background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:14px 18px;">
+          <div style="font-weight:700;font-size:14px;margin-bottom:4px;">🔄 Trial-to-full-size conversion</div>
+          <div style="font-size:13px;color:var(--muted);">After the first or second cycle, automatically swap the trial SKU for the full-size product and update the price. Perfect for supplements — the welcome kit becomes a refill program without the merchant lifting a finger. <strong>Actions used: Swap Product + Update product price.</strong></div>
+        </div>
+        <div style="background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:14px 18px;">
+          <div style="font-weight:700;font-size:14px;margin-bottom:4px;">💸 High discount order 1 → lower discount order 2</div>
+          <div style="font-size:13px;color:var(--muted);">Give a big welcome discount on the first order to drive conversion, then automatically swap to a sustainable discount on renewal. Protects margin without the merchant having to manually update. <strong>Actions used: Add discount + Remove discounts.</strong></div>
+        </div>
+        <div style="background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:14px 18px;">
+          <div style="font-weight:700;font-size:14px;margin-bottom:4px;">📦 Bundle expansion / kit splitting</div>
+          <div style="font-size:13px;color:var(--muted);">Some merchants sell a bundle as a single Shopify line item, which locks subscribers into a rigid recurring order. This Journey breaks the bundled SKU into individual products after a set cycle, giving subscribers the flexibility to swap or remove items. <strong>Actions used: Bundle expansion.</strong></div>
+        </div>
+        <div style="background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:14px 18px;">
+          <div style="font-weight:700;font-size:14px;margin-bottom:4px;">🏷️ In-portal engagement banners</div>
+          <div style="font-size:13px;color:var(--muted);">Trigger an interactive banner inside the customer portal after specific subscriber behavior — offer an upsell, surface a last-minute discount before renewal, or guide them through an "upsize" flow. This is the same mechanic Noah demos for quantity upsell banners. <strong>Actions used: Trigger banner.</strong></div>
+        </div>
+      </div>
+      <h3>All available Journey actions (your toolkit):</h3>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">Know what each one does so you can map merchant problems to solutions on the fly:</p>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;">
+        <span style="background:var(--accent-light);color:var(--accent);font-size:12px;font-weight:600;padding:4px 10px;border-radius:99px;">Swap Product</span>
+        <span style="background:var(--accent-light);color:var(--accent);font-size:12px;font-weight:600;padding:4px 10px;border-radius:99px;">Add Discount</span>
+        <span style="background:var(--accent-light);color:var(--accent);font-size:12px;font-weight:600;padding:4px 10px;border-radius:99px;">Add Product</span>
+        <span style="background:var(--accent-light);color:var(--accent);font-size:12px;font-weight:600;padding:4px 10px;border-radius:99px;">Change Delivery Price</span>
+        <span style="background:var(--accent-light);color:var(--accent);font-size:12px;font-weight:600;padding:4px 10px;border-radius:99px;">Change Interval</span>
+        <span style="background:var(--accent-light);color:var(--accent);font-size:12px;font-weight:600;padding:4px 10px;border-radius:99px;">Trigger Banner</span>
+        <span style="background:var(--accent-light);color:var(--accent);font-size:12px;font-weight:600;padding:4px 10px;border-radius:99px;">Update Product Price</span>
+        <span style="background:var(--accent-light);color:var(--accent);font-size:12px;font-weight:600;padding:4px 10px;border-radius:99px;">Adjust Next Billing Date</span>
+        <span style="background:var(--accent-light);color:var(--accent);font-size:12px;font-weight:600;padding:4px 10px;border-radius:99px;">Notification (email / SMS / integration)</span>
+        <span style="background:var(--accent-light);color:var(--accent);font-size:12px;font-weight:600;padding:4px 10px;border-radius:99px;">Bundle Expansion</span>
+        <span style="background:var(--accent-light);color:var(--accent);font-size:12px;font-weight:600;padding:4px 10px;border-radius:99px;">Delay</span>
+        <span style="background:var(--accent-light);color:var(--accent);font-size:12px;font-weight:600;padding:4px 10px;border-radius:99px;">Remove Products</span>
+        <span style="background:var(--accent-light);color:var(--accent);font-size:12px;font-weight:600;padding:4px 10px;border-radius:99px;">Remove Discounts</span>
+        <span style="background:var(--accent-light);color:var(--accent);font-size:12px;font-weight:600;padding:4px 10px;border-radius:99px;">Pause Subscription</span>
+        <span style="background:var(--accent-light);color:var(--accent);font-size:12px;font-weight:600;padding:4px 10px;border-radius:99px;">Swap Static Boxes</span>
+        <span style="background:var(--accent-light);color:var(--accent);font-size:12px;font-weight:600;padding:4px 10px;border-radius:99px;">Swap Dynamic Boxes</span>
+        <span style="background:var(--accent-light);color:var(--accent);font-size:12px;font-weight:600;padding:4px 10px;border-radius:99px;">Remove Box</span>
+        <span style="background:var(--accent-light);color:var(--accent);font-size:12px;font-weight:600;padding:4px 10px;border-radius:99px;">Award Credits</span>
+        <span style="background:var(--accent-light);color:var(--accent);font-size:12px;font-weight:600;padding:4px 10px;border-radius:99px;">Sunset Prepaid</span>
+      </div>
       <div class="talk-track"><div class="talk-track-label">🎤 Talk track</div>"Let's say you sell a trial kit and you want to automatically swap someone to a full size after their first order. Watch how long this takes."<br><br>Build it in real time — condition, action, notification — then land the punch:<br><br>"That took two minutes. Imagine everything else you can do with this."</div>
       <hr style="border:none;border-top:1px solid var(--border);margin:28px 0;">
       <h2>6. Surprise &amp; Delight + Streaks</h2>
