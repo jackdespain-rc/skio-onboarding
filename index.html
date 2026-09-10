@@ -1062,6 +1062,7 @@ const state = {
   adminAuthed: false, adminView: 'list', adminRepEmail: null,
   adminReps: null,     // null = not yet fetched; [] = fetched (may be empty)
   adminRepData: null,  // { progress, grades } for the rep currently being graded
+  repGrades: null,     // the logged-in rep's own grades (fetched from server)
 };
 const ADMIN_CODE = 'skio2024';
 
@@ -1123,6 +1124,15 @@ function loadGrades() {
     return { [state.adminRepEmail]: state.adminRepData.grades || {} };
   }
   return {};
+}
+// Fetch the logged-in rep's own grades so Section 5 can show the Gong link
+async function syncRepGradesFromServer(email) {
+  try {
+    const r = await fetch('/api/grades/' + encodeURIComponent(email));
+    const { grades } = await r.json();
+    state.repGrades = grades || {};
+    render(); // re-render so Section 5 picks up the capstone URL if present
+  } catch(e) {}
 }
 // ── Admin data fetchers ──────────────────────────────────────────────────────
 async function fetchAdminReps() {
@@ -1252,8 +1262,9 @@ function bindLogin() {
   function doLogin() {
     state.user = { name: name.value.trim(), email: email.value.trim().toLowerCase() };
     saveUser(); loadProgress(); initProgress(); state.view = 'home'; render();
-    // Async: pull latest progress from server and re-render if newer
+    // Async: pull latest progress + grades from server and re-render if newer
     syncProgressFromServer(state.user.email);
+    syncRepGradesFromServer(state.user.email);
   }
 }
 
@@ -1397,11 +1408,23 @@ function renderReader() {
     </div>
   </div>`;
 
+  // If the rep has a Gong recording uploaded, append it to the Capstone Rubric page
+  const gongBlock = (() => {
+    if (page.id !== 's5p2') return '';
+    const url = state.repGrades && state.repGrades.capstone && state.repGrades.capstone.gongUrl;
+    if (!url) return '';
+    return `<div class="callout callout-accent" style="margin-top:24px;">
+      <div class="callout-title">🎥 Your Mock Demo Recording</div>
+      <p style="margin-bottom:10px;">Your manager has linked your Gong recording below. Review it to see where you nailed it and what to sharpen before your next call.</p>
+      <a href="${url}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:#fff;padding:10px 18px;border-radius:9px;font-size:13px;font-weight:600;text-decoration:none;">▶ Watch your mock demo in Gong</a>
+    </div>`;
+  })();
+
   const content = isHwPage
     ? `<div class="reader-wrap"><div class="reader-inner fade-in">${renderHomeworkPage(section.id)}</div></div>`
     : isQuizPage
     ? `<div class="reader-wrap"><div class="reader-inner fade-in">${renderQuizPage(section.id, page.quizGroupIndices)}</div></div>`
-    : `<div class="reader-wrap"><div class="reader-inner fade-in">${page.content}</div></div>`;
+    : `<div class="reader-wrap"><div class="reader-inner fade-in">${page.content}${gongBlock}</div></div>`;
 
   let navRight = '';
   if (isHwPage) {
@@ -1697,10 +1720,25 @@ function renderRepGradeView() {
   const repGrades = grades[email] || {};
   const name = getRepName(email);
 
+  const capstoneSaved = repGrades.capstone && repGrades.capstone.gongUrl;
+
   let html = `<div class="admin-wrap"><div class="admin-inner">
     <div class="admin-header">
       <div><h1>Grading: ${name}</h1><div style="font-size:13px;color:var(--muted);margin-top:2px;">${email}</div></div>
       <button class="btn-sm" id="btn-back-list">← All Reps</button>
+    </div>
+
+    <div class="grade-section" style="background:var(--white);border:1.5px solid var(--accent);border-radius:14px;padding:22px 24px;margin-bottom:20px;">
+      <div class="grade-section-header" style="margin-bottom:14px;">
+        <h3 style="color:var(--accent);">🎥 Capstone — Mock Demo Recording</h3>
+        ${capstoneSaved ? '<span class="pill pill-green">Recording linked</span>' : '<span class="pill pill-gray">No recording yet</span>'}
+      </div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">Paste the Gong call URL here. The rep will see a "Watch your mock demo" button on their Capstone Rubric page.</p>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+        <input id="capstone-gong-url" type="url" placeholder="https://app.gong.io/call?id=..." value="${capstoneSaved ? repGrades.capstone.gongUrl : ''}" style="flex:1;min-width:260px;border:1.5px solid var(--border);border-radius:9px;padding:9px 14px;font-size:13px;background:var(--bg);color:var(--text);">
+        <button class="btn-sm btn-sm-primary" id="btn-save-capstone" style="white-space:nowrap;">Save Recording</button>
+      </div>
+      ${capstoneSaved ? `<div style="margin-top:10px;font-size:12px;color:var(--success);">✓ Currently saved: <a href="${repGrades.capstone.gongUrl}" target="_blank" rel="noopener" style="color:var(--accent);">${repGrades.capstone.gongUrl}</a></div>` : ''}
     </div>`;
 
   SECTIONS.forEach(section => {
@@ -1799,6 +1837,16 @@ function bindRepGradeView() {
     });
   });
 
+  // Capstone Gong URL
+  document.getElementById('btn-save-capstone')?.addEventListener('click', () => {
+    const url = document.getElementById('capstone-gong-url')?.value.trim();
+    if (!grades[email].capstone) grades[email].capstone = {};
+    grades[email].capstone.gongUrl = url;
+    saveGrades(grades);
+    toast('Recording saved ✓');
+    render(); // re-renders the card to show "currently saved" state
+  });
+
   // Approve buttons
   document.querySelectorAll('[data-approve]').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -1819,6 +1867,7 @@ loadUser();
 if (state.user) {
   loadProgress(); initProgress(); state.view = 'home';
   syncProgressFromServer(state.user.email); // async — re-renders if server has newer data
+  syncRepGradesFromServer(state.user.email); // async — loads capstone Gong URL if manager saved one
 }
 render();
 
