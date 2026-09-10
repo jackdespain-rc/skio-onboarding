@@ -1542,8 +1542,15 @@ function renderDashboard() {
     ? renderScoresTab()
     : `<div class="section-cards">${courseTab}</div>`;
 
+  const beforeYouStart = state.dashTab === 'course' ? `
+    <div class="callout callout-warn" style="margin-bottom:24px;">
+      <div class="callout-title">📋 Before You Start</div>
+      Get access to <strong>Avoma</strong> from <strong>Zev</strong> before you begin — there is a lot of linked call content throughout this course and you will not be able to view it without access. Reach out to Zev directly and ask to be added to the Avoma workspace before getting started.
+    </div>` : '';
+
   return `<div class="dashboard-wrap"><div class="dashboard-inner">
     ${progressRing}
+    ${beforeYouStart}
     ${tabBar}
     ${body}
   </div></div>`;
