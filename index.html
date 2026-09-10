@@ -137,6 +137,27 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 /* Dashboard */
 .dashboard-wrap { flex: 1; overflow-y: auto; padding: 44px 36px; min-height: 0; background: var(--bg); }
 .dashboard-inner { max-width: 880px; margin: 0 auto; }
+/* Dashboard tabs */
+.dash-tabs { display: flex; gap: 4px; margin-bottom: 32px; background: var(--surface); border: 1.5px solid var(--border); border-radius: 12px; padding: 4px; width: fit-content; }
+.dash-tab { padding: 8px 22px; border-radius: 9px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; background: transparent; color: var(--muted); transition: all 0.15s; }
+.dash-tab.active { background: var(--white); color: var(--text); box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+/* Scores tab */
+.scores-section { background: var(--white); border: 1.5px solid var(--border); border-radius: 16px; overflow: hidden; margin-bottom: 20px; }
+.scores-section-header { padding: 18px 22px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.scores-section-header h3 { font-size: 15px; font-weight: 700; }
+.scores-item { padding: 16px 22px; border-bottom: 1px solid var(--border); }
+.scores-item:last-child { border-bottom: none; }
+.scores-item-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent); margin-bottom: 4px; }
+.scores-item-prompt { font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+.scores-item-answer { font-size: 13px; color: var(--text); background: var(--bg); border-radius: 8px; padding: 10px 12px; margin-bottom: 8px; white-space: pre-wrap; word-break: break-word; }
+.scores-feedback { display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #eff6ff; border-radius: 8px; border: 1px solid #bfdbfe; }
+.scores-stars { color: #f59e0b; font-size: 15px; letter-spacing: 1px; }
+.scores-note { font-size: 13px; color: #1d4ed8; font-style: italic; }
+.scores-empty { padding: 40px; text-align: center; color: var(--muted); font-size: 14px; }
+.scores-summary { background: var(--white); border: 1.5px solid var(--border); border-radius: 16px; padding: 22px 24px; margin-bottom: 24px; display: flex; gap: 32px; align-items: center; flex-wrap: wrap; }
+.scores-stat { text-align: center; }
+.scores-stat-num { font-family: var(--serif); font-size: 28px; font-weight: 700; color: var(--text); letter-spacing: -0.03em; }
+.scores-stat-label { font-size: 11px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; margin-top: 2px; }
 .dashboard-header { margin-bottom: 32px; }
 .dashboard-header h1 { font-family: var(--serif); font-size: 30px; font-weight: 600; margin-bottom: 6px; letter-spacing: -0.025em; }
 .dashboard-header p { font-size: 15px; color: var(--muted); }
@@ -1102,6 +1123,7 @@ const SECTIONS = [
 const state = {
   view: 'login', user: null, progress: {},
   reader: { sectionId: null, pageIndex: 0 },
+  dashTab: 'course',   // 'course' | 'scores'
   adminAuthed: false, adminView: 'list', adminRepEmail: null,
   adminReps: null,     // null = not yet fetched; [] = fetched (may be empty)
   adminRepData: null,  // { progress, grades } for the rep currently being graded
@@ -1366,12 +1388,139 @@ function bindSidebar() {
 //  DASHBOARD
 // ═══════════════════════════════════════════════════
 
+function renderScoresTab() {
+  const grades = state.repGrades || {};
+  const submittedSections = SECTIONS.filter(s => state.progress[s.id]?.submitted);
+
+  if (submittedSections.length === 0) {
+    return `<div class="scores-empty">
+      <div style="font-size:32px;margin-bottom:12px;">📋</div>
+      <div style="font-weight:600;margin-bottom:6px;">Nothing to show yet</div>
+      <div>Complete and submit a section to see your scores and manager feedback here.</div>
+    </div>`;
+  }
+
+  // Summary stats
+  let totalScore = 0, totalGraded = 0, sectionsApproved = 0;
+  submittedSections.forEach(s => {
+    const sg = grades[s.id] || {};
+    if (sg.approved) sectionsApproved++;
+    Object.entries(sg).forEach(([k, v]) => {
+      if (k !== 'approved' && typeof v === 'object' && v && v.score) {
+        totalScore += v.score; totalGraded++;
+      }
+    });
+  });
+  const avgScore = totalGraded ? (totalScore / totalGraded).toFixed(1) : null;
+
+  // Capstone block
+  const gongUrl = grades.capstone && grades.capstone.gongUrl;
+  const capstoneBlock = gongUrl ? `
+    <div class="scores-section" style="border-color:var(--accent);">
+      <div class="scores-section-header">
+        <h3>🎥 Capstone Recording</h3>
+        <span class="pill pill-green">Linked</span>
+      </div>
+      <div class="scores-item">
+        <div style="font-size:13px;color:var(--muted);margin-bottom:10px;">Your manager has linked your mock demo recording below.</div>
+        <a href="${gongUrl}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:#fff;padding:9px 16px;border-radius:9px;font-size:13px;font-weight:600;text-decoration:none;">▶ Watch in Gong</a>
+      </div>
+    </div>` : '';
+
+  // Per-section blocks
+  const sectionBlocks = submittedSections.map(section => {
+    const hw = HOMEWORK[section.id];
+    if (!hw) return '';
+    const secGrades = grades[section.id] || {};
+    const answers = state.progress[section.id]?.homework || {};
+    const approved = secGrades.approved;
+
+    let itemsHtml = '';
+    hw.groups.forEach(group => {
+      group.items.forEach(item => {
+        const answer = item.type === 'link_note'
+          ? [answers[item.id + '_url'], answers[item.id + '_note']].filter(Boolean).join('\n')
+          : (answers[item.id] || '');
+        const ig = secGrades[item.id];
+        if (!answer && !ig) return; // skip completely blank items
+        const stars = ig && ig.score
+          ? '★'.repeat(ig.score) + '☆'.repeat(5 - ig.score)
+          : null;
+
+        itemsHtml += `<div class="scores-item">
+          <div class="scores-item-label">${item.label}</div>
+          <div class="scores-item-prompt">${item.prompt}</div>
+          ${answer ? `<div class="scores-item-answer">${answer}</div>` : ''}
+          ${stars ? `<div class="scores-feedback">
+            <span class="scores-stars">${stars}</span>
+            ${ig.feedback ? `<span class="scores-note">"${ig.feedback}"</span>` : ''}
+          </div>` : (secGrades.approved === undefined && !stars ? `<div style="font-size:12px;color:var(--muted);padding:4px 0;">⏳ Awaiting manager review</div>` : '')}
+        </div>`;
+      });
+    });
+
+    return `<div class="scores-section">
+      <div class="scores-section-header">
+        <h3>Section ${section.num}: ${section.title}</h3>
+        ${approved ? '<span class="pill pill-green">✓ Approved</span>' : '<span class="pill pill-gray">Pending</span>'}
+      </div>
+      ${itemsHtml || `<div style="padding:18px 22px;font-size:13px;color:var(--muted);">⏳ Awaiting manager review</div>`}
+    </div>`;
+  }).join('');
+
+  return `
+    <div class="scores-summary">
+      <div class="scores-stat">
+        <div class="scores-stat-num">${submittedSections.length} / ${SECTIONS.length}</div>
+        <div class="scores-stat-label">Sections Submitted</div>
+      </div>
+      <div style="width:1px;height:40px;background:var(--border);"></div>
+      <div class="scores-stat">
+        <div class="scores-stat-num">${sectionsApproved}</div>
+        <div class="scores-stat-label">Sections Approved</div>
+      </div>
+      <div style="width:1px;height:40px;background:var(--border);"></div>
+      <div class="scores-stat">
+        <div class="scores-stat-num">${avgScore ? avgScore + ' / 5' : '—'}</div>
+        <div class="scores-stat-label">Avg Score</div>
+      </div>
+      ${gongUrl ? `<div style="width:1px;height:40px;background:var(--border);"></div>
+      <div class="scores-stat">
+        <div class="scores-stat-num" style="font-size:20px;">🎥</div>
+        <div class="scores-stat-label">Recording Linked</div>
+      </div>` : ''}
+    </div>
+    ${capstoneBlock}
+    ${sectionBlocks}`;
+}
+
 function renderDashboard() {
   const total = getTotalProgress();
   const C = 2 * Math.PI * 30;
   const dash = C - (total.pct / 100) * C;
   const submittedCount = SECTIONS.filter(s => getSectionProgress(s.id).submitted).length;
-  const cards = SECTIONS.map(s => {
+
+  const tabBar = `<div class="dash-tabs">
+    <button class="dash-tab ${state.dashTab === 'course' ? 'active' : ''}" data-tab="course">Course</button>
+    <button class="dash-tab ${state.dashTab === 'scores' ? 'active' : ''}" data-tab="scores">My Scores</button>
+  </div>`;
+
+  const progressRing = `<div class="overall-progress">
+    <div class="op-ring">
+      <svg width="72" height="72" viewBox="0 0 72 72">
+        <circle cx="36" cy="36" r="30" fill="none" stroke="#E4E4E7" stroke-width="6"/>
+        <circle cx="36" cy="36" r="30" fill="none" stroke="#0D9488" stroke-width="6"
+          stroke-dasharray="${C}" stroke-dashoffset="${dash}" stroke-linecap="round" style="transform:rotate(-90deg);transform-origin:50% 50%"/>
+      </svg>
+      <div class="op-ring-text">${total.pct}%</div>
+    </div>
+    <div class="op-info">
+      <h2>Welcome back, ${state.user ? state.user.name.split(' ')[0] : 'there'}! 👋</h2>
+      <p>${total.read} of ${total.total} pages read &nbsp;·&nbsp; ${submittedCount} of 5 sections submitted</p>
+    </div>
+  </div>`;
+
+  const courseTab = SECTIONS.map(s => {
     const p = getSectionProgress(s.id);
     const unlocked = isSectionUnlocked(s.id);
     const statusClass = !unlocked ? 'locked' : p.submitted ? 'complete' : p.pct > 0 ? 'in-progress' : 'not-started';
@@ -1388,26 +1537,22 @@ function renderDashboard() {
       <div class="sc-progress-bar"><div class="sc-progress-fill" style="width:${unlocked ? p.pct : 0}%"></div></div>
     </div>`;
   }).join('');
+
+  const body = state.dashTab === 'scores'
+    ? renderScoresTab()
+    : `<div class="section-cards">${courseTab}</div>`;
+
   return `<div class="dashboard-wrap"><div class="dashboard-inner">
-    <div class="overall-progress">
-      <div class="op-ring">
-        <svg width="72" height="72" viewBox="0 0 72 72">
-          <circle cx="36" cy="36" r="30" fill="none" stroke="#E4E4E7" stroke-width="6"/>
-          <circle cx="36" cy="36" r="30" fill="none" stroke="#0D9488" stroke-width="6"
-            stroke-dasharray="${C}" stroke-dashoffset="${dash}" stroke-linecap="round" style="transform:rotate(-90deg);transform-origin:50% 50%"/>
-        </svg>
-        <div class="op-ring-text">${total.pct}%</div>
-      </div>
-      <div class="op-info">
-        <h2>Welcome back, ${state.user ? state.user.name.split(' ')[0] : 'there'}! 👋</h2>
-        <p>${total.read} of ${total.total} pages read &nbsp;·&nbsp; ${submittedCount} of 5 sections submitted</p>
-      </div>
-    </div>
-    <div class="section-cards">${cards}</div>
+    ${progressRing}
+    ${tabBar}
+    ${body}
   </div></div>`;
 }
 
 function bindDashboard() {
+  document.querySelectorAll('.dash-tab').forEach(btn => {
+    btn.addEventListener('click', () => { state.dashTab = btn.dataset.tab; render(); });
+  });
   document.querySelectorAll('[data-open]').forEach(el => {
     el.addEventListener('click', () => {
       const sId = el.dataset.open;
