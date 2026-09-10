@@ -1603,7 +1603,14 @@ function renderHomeworkPage(sectionId) {
     <div class="hw-header">
       <h1>📋 ${hw.title}</h1>
       <p>${hw.intro}</p>
-      ${submitted ? '<div class="hw-submitted-badge">✓ Submitted — awaiting manager review</div>' : ''}
+      ${submitted ? (() => {
+        const secGrades = (state.repGrades || {})[sectionId] || {};
+        const isApproved = secGrades.approved;
+        const hasFeedback = Object.values(secGrades).some(v => v && typeof v === 'object' && v.score);
+        if (isApproved) return '<div class="hw-submitted-badge" style="background:var(--success-bg);color:var(--success);border-color:var(--success);">✓ Approved by your manager</div>';
+        if (hasFeedback) return '<div class="hw-submitted-badge" style="background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe;">💬 Manager feedback below — review and discuss</div>';
+        return '<div class="hw-submitted-badge">✓ Submitted — awaiting manager review</div>';
+      })() : ''}
     </div>`;
 
   for (const group of hw.groups) {
@@ -1612,9 +1619,8 @@ function renderHomeworkPage(sectionId) {
       const val = answers[item.id] || '';
       const valUrl = answers[item.id + '_url'] || '';
       const valNote = answers[item.id + '_note'] || '';
-      const grades = loadGrades();
-      const repGrades = grades[state.user?.email] || {};
-      const sectionGrades = repGrades[sectionId] || {};
+      // Use rep's own grades (fetched from server on login) so feedback is visible to reps
+      const sectionGrades = (state.repGrades || {})[sectionId] || {};
       const itemGrade = sectionGrades[item.id];
 
       html += `<div class="hw-item">
