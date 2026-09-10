@@ -256,6 +256,49 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 #lightbox-close:hover { opacity: 1; }
 .reader-inner img, .expandable-img { transition: opacity .15s; cursor: zoom-in; }
 .reader-inner img:hover, .expandable-img:hover { opacity: .88; }
+
+/* ── Print / PDF export ───────────────────────────────────────────────────── */
+@media print {
+  /* Hide everything that isn't the scorecard content */
+  .sidebar, .topbar, .reader-nav, .no-print,
+  #btn-back-home, #btn-back-list, #btn-export-pdf, #btn-export-csv,
+  #btn-save-capstone, #capstone-gong-url,
+  .star-row, input.grade-note { display: none !important; }
+
+  /* Remove scrolling constraints — let content flow to pages */
+  html, body, #app, .admin-wrap { overflow: visible !important; height: auto !important; }
+  .admin-wrap { padding: 0 !important; background: #fff !important; }
+  .admin-inner { max-width: 100% !important; }
+
+  /* Stars — show filled ones as solid, empty as outline, no pointer */
+  .star { color: #ccc; font-size: 16px; }
+  .star.on { color: #f59e0b; }
+
+  /* Print-only rep name header */
+  .print-header { display: block !important; }
+
+  /* Keep sections together and break cleanly between them */
+  .grade-section { break-inside: avoid; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 8px; padding: 16px; }
+
+  /* Show saved values of hidden inputs as inline text via data-val attribute */
+  .grade-note-print { display: inline !important; font-style: italic; color: #555; }
+
+  /* Pill colors survive print */
+  .pill-green { background: #dcfce7 !important; color: #166534 !important; }
+  .pill-gray  { background: #f1f5f9 !important; color: #475569 !important; }
+
+  /* Capstone gong URL — show as text */
+  .capstone-url-print { display: block !important; font-size: 12px; color: #6366f1; word-break: break-all; }
+
+  /* Q&A rows */
+  .qa-item { break-inside: avoid; border: 1px solid #e5e7eb; border-radius: 6px; padding: 12px; margin-bottom: 8px; }
+  .qa-grade-row { margin-top: 6px; display: flex; align-items: center; gap: 10px; }
+}
+
+/* Print-only elements hidden on screen */
+.print-header { display: none; }
+.grade-note-print { display: none; }
+.capstone-url-print { display: none; }
 </style>
 </head>
 <body>
@@ -1646,7 +1689,10 @@ function renderAdminGate() {
 function renderAdminDashboard() {
   const header = `<div class="admin-header">
       <h1>Manager Dashboard</h1>
-      <button class="btn-sm" id="btn-back-home">← Back</button>
+      <div style="display:flex;gap:8px;">
+        <button class="btn-sm" id="btn-export-csv" style="background:var(--accent);color:#fff;border-color:var(--accent);">↓ Export CSV</button>
+        <button class="btn-sm" id="btn-back-home">← Back</button>
+      </div>
     </div>`;
 
   // Not yet fetched — trigger and show spinner
@@ -1723,9 +1769,17 @@ function renderRepGradeView() {
   const capstoneSaved = repGrades.capstone && repGrades.capstone.gongUrl;
 
   let html = `<div class="admin-wrap"><div class="admin-inner">
+    <div class="print-header" style="margin-bottom:20px;padding-bottom:14px;border-bottom:2px solid #e5e7eb;">
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#6366f1;margin-bottom:4px;">Skio Certification · Scorecard</div>
+      <div style="font-size:22px;font-weight:700;color:#1e293b;">${name}</div>
+      <div style="font-size:13px;color:#64748b;">${email}</div>
+    </div>
     <div class="admin-header">
       <div><h1>Grading: ${name}</h1><div style="font-size:13px;color:var(--muted);margin-top:2px;">${email}</div></div>
-      <button class="btn-sm" id="btn-back-list">← All Reps</button>
+      <div style="display:flex;gap:8px;" class="no-print">
+        <button class="btn-sm" id="btn-export-pdf" style="background:var(--accent);color:#fff;border-color:var(--accent);">↓ Export PDF</button>
+        <button class="btn-sm" id="btn-back-list">← All Reps</button>
+      </div>
     </div>
 
     <div class="grade-section" style="background:var(--white);border:1.5px solid var(--accent);border-radius:14px;padding:22px 24px;margin-bottom:20px;">
@@ -1739,6 +1793,7 @@ function renderRepGradeView() {
         <button class="btn-sm btn-sm-primary" id="btn-save-capstone" style="white-space:nowrap;">Save Recording</button>
       </div>
       ${capstoneSaved ? `<div style="margin-top:10px;font-size:12px;color:var(--success);">✓ Currently saved: <a href="${repGrades.capstone.gongUrl}" target="_blank" rel="noopener" style="color:var(--accent);">${repGrades.capstone.gongUrl}</a></div>` : ''}
+      <div class="capstone-url-print">${capstoneSaved ? 'Recording: ' + repGrades.capstone.gongUrl : 'No recording linked yet.'}</div>
     </div>`;
 
   SECTIONS.forEach(section => {
@@ -1771,7 +1826,7 @@ function renderRepGradeView() {
             <div class="star-row" data-sid="${section.id}" data-iid="${item.id}">
               ${[1,2,3,4,5].map(n => `<span class="star ${(ig.score||0) >= n ? 'on' : ''}" data-val="${n}">★</span>`).join('')}
             </div>
-            <input class="grade-note" type="text" placeholder="Feedback (optional)" value="${ig.feedback||''}" data-sid="${section.id}" data-iid="${item.id}">
+            <input class="grade-note" type="text" placeholder="Feedback (optional)" value="${ig.feedback||''}" data-sid="${section.id}" data-iid="${item.id}"><span class="grade-note-print">${ig.feedback ? '"' + ig.feedback + '"' : ''}</span>
           </div>
         </div>`;
       });
@@ -1782,6 +1837,56 @@ function renderRepGradeView() {
 
   html += `</div></div>`;
   return html;
+}
+
+// ── CSV export helper ────────────────────────────────────────────────────────
+function exportRepsCsv() {
+  if (!state.adminReps || state.adminReps.length === 0) { toast('No rep data to export.'); return; }
+
+  // Build header row
+  const sectionHeaders = SECTIONS.flatMap(s => [
+    'S' + s.num + ' Submitted',
+    'S' + s.num + ' Approved',
+    'S' + s.num + ' Avg Score'
+  ]);
+  const headers = ['Name', 'Email', 'Last Active', ...sectionHeaders, 'Capstone Recorded', 'Gong URL'];
+
+  const rows = state.adminReps.map(r => {
+    const prog = r.progress || {};
+    const grades = r.grades || {};
+    const lastActive = r.lastActive ? new Date(r.lastActive._seconds ? r.lastActive._seconds * 1000 : r.lastActive).toLocaleDateString() : '';
+
+    const sectionCells = SECTIONS.flatMap(s => {
+      const submitted = prog[s.id]?.submitted ? 'Yes' : 'No';
+      const secGrades = grades[s.id] || {};
+      const approved = secGrades.approved ? 'Yes' : 'No';
+      // Average star score across all graded items (skip ungraded)
+      const scores = Object.entries(secGrades)
+        .filter(([k, v]) => k !== 'approved' && typeof v === 'object' && v.score)
+        .map(([, v]) => v.score);
+      const avg = scores.length ? (scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(1) : '';
+      return [submitted, approved, avg];
+    });
+
+    const capstoneSaved = grades.capstone && grades.capstone.gongUrl;
+    return [
+      r.name || r.email,
+      r.email,
+      lastActive,
+      ...sectionCells,
+      capstoneSaved ? 'Yes' : 'No',
+      capstoneSaved ? grades.capstone.gongUrl : ''
+    ];
+  });
+
+  const escape = v => '"' + String(v).replace(/"/g, '""') + '"';
+  const csv = [headers, ...rows].map(row => row.map(escape).join(',')).join('\r\n');
+
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url; a.download = 'skio-scorecard-' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click(); URL.revokeObjectURL(url);
 }
 
 function bindAdmin() {
@@ -1797,6 +1902,9 @@ function bindAdmin() {
   // Back buttons
   document.getElementById('btn-back-home')?.addEventListener('click', () => { state.view = 'home'; render(); });
   document.getElementById('btn-back-list')?.addEventListener('click', () => { state.adminView = 'list'; render(); });
+  // Exports
+  document.getElementById('btn-export-csv')?.addEventListener('click', exportRepsCsv);
+  document.getElementById('btn-export-pdf')?.addEventListener('click', () => window.print());
   // Rep rows — clear cached rep data so fetchRepData fires fresh
   document.querySelectorAll('.rep-row[data-rep]').forEach(el => {
     el.addEventListener('click', () => {
