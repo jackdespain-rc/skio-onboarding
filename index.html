@@ -1071,34 +1071,47 @@ const SECTIONS = [
     { id:'s4hw', type:'homework', title:'Section 4 Homework' }
   ]},
   { id:'s5', num:5, title:'Certification', subtitle:'Skio Certification & Capstone', pages:[
-    { id:'s5p1', title:'Certification Overview', content:`
-      <h1>Section 5 · Skio Certification</h1>
-      <p class="page-subtitle">Reading the course isn't the finish line — building in the product is. The homework and quizzes are woven through every section: as you read, you film Looms, build features in your own demo store, and check yourself with the quizzes. This page is where it all comes together.</p>
-      <h2>How certification works</h2>
-      <ol>
-        <li>Do the <strong>HOMEWORK</strong> and <strong>CHECK YOURSELF</strong> quizzes as you go, section by section, in your own demo store.</li>
-        <li>Save your proof (Looms, screenshots, demo-store links) as you collect it.</li>
-        <li>Your manager reviews each submission and provides written feedback — expect notes on quality, not just a checkmark.</li>
-        <li>Once all sections are approved, book your capstone. Pass the rubric and you're Skio Certified.</li>
-      </ol>
-      <div class="callout callout-accent"><div class="callout-title">🎯 The Capstone: Mock Discovery + Demo Call</div>The final sign-off isn't a test — it's a simulated sales call. Your manager plays the merchant. You run the call.<br><br>You'll be expected to hit three things:<br><br>
-        <strong>1. The Acquisition Narrative</strong> — Open with the approved talk track. Frame Skio as "us," not them. Land it in under 60 seconds before sharing your screen.<br><br>
-        <strong>2. The Demo</strong> — Run a focused demo from your demo store following the 10-step flow. Show real depth on the three money moments: Customer Portal, Cancel Flow, and Journeys. Navigate without fumbling.<br><br>
-        <strong>3. Competitive FUD</strong> — At some point in the call, your manager will introduce a competitor objection. <em>You won't know which one until it happens.</em> It could be Loop, Stay, Ordergroove, a budget app, or a post-acquisition objection. Your job is to handle it calmly, honestly, and with the right proof points — then bring the call back.<br><br>
-        Score 20 / 25 on the rubric and you're certified. Below 20, reschedule and keep building.
+    { id:'s5p1', title:'Capstone Brief', content:`
+      <h1>Your Capstone: The Mock Discovery + Demo Call</h1>
+      <p class="page-subtitle">The final step to getting Skio Certified isn't a test — it's a mock disco/demo. Your manager will play the role of a merchant who is actively evaluating subscription platforms and has agreed to up to 45 minutes for a discovery and demo.</p>
+
+      <h2>The Setup</h2>
+      <p>You are to assume that this merchant was fast-tracked to you from your BDR with the following note:</p>
+      <div style="background:var(--surface);border:1.5px solid var(--border);border-radius:12px;padding:20px 22px;margin:16px 0;font-size:14px;line-height:1.7;">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);margin-bottom:10px;">📩 BDR Handoff Note</div>
+        <p style="margin:0;">"Hey, I just booked this meeting for you. You're meeting with <strong>Jordan Michaels, Head of E-Commerce at Bloom &amp; Root</strong>. They're a DTC wellness brand doing ~$4M ARR with ~8,000 active subscribers, selling a greens + adaptogens subscription. They're currently on <a href="http://Stay.ai" target="_blank" rel="noopener" style="color:var(--accent);">Stay.ai</a> and it sounds like they're evaluating alternatives, but they didn't say who. Anyways, they said they have 45 minutes for a call. I'm not sure if they know that we bought Skio."</p>
       </div>
-      <h2>Certification checklist</h2>
+      <p>Your job is to run the call the same way you would with a real prospect: open with the acquisition narrative, earn the right to demo by running a full discovery, and then show the platform in a way that speaks directly to what the merchant told you they care about. Think of it less as a performance review and more as a dress rehearsal for the real thing.</p>
+
+      <h2>What You're Expected to Cover</h2>
+      <p>Start the call with natural rapport, then seamlessly test their knowledge of the Skio acquisition. Use the acquisition narrative and be sure to frame Skio as "us" — set the tone before you ever share your screen.</p>
+      <p>From there, run discovery. You should be asking questions that surface the merchant's:</p>
+      <ol>
+        <li><strong>Before Scenario</strong> — what does their current situation look like?</li>
+        <li><strong>Negative Consequences</strong> — what is staying on Stay.ai actually costing them?</li>
+        <li><strong>After Scenario</strong> — what does the ideal future state look like?</li>
+        <li><strong>Business Outcomes</strong> — what metrics are they trying to move?</li>
+        <li><strong>Required Capabilities</strong> — what does the platform need to do to win the deal?</li>
+        <li><strong>Competition</strong> — who else are they evaluating?</li>
+        <li><strong>Timeline</strong> — when do they need to make a decision?</li>
+      </ol>
+      <div class="callout callout-warn"><div class="callout-title">Minimum bar before demoing</div>You must hit the first 5 areas before jumping into the demo. If you haven't asked those questions, you don't know what to show. Items 6 and 7 can be hit after the demo if needed — but don't skip them entirely.</div>
+      <p>Once you've earned it, demo from hand-selected Skio merchants and your demo store, and tie everything back to what the merchant told you. <strong>Do not make edits to a real Skio store.</strong> Somewhere in the call, a competitive objection will come up. You won't know which platform it's about until it happens. Handle it calmly, honestly, and with the right proof points — then bring the call back.</p>
+
+      <h2>How You're Graded</h2>
+      <p>The rubric has five categories, each worth up to 5 points, for a maximum of 25. See the full rubric on the next page. You need a score of <strong>20 or higher</strong> to pass and earn your Skio Certification. Below 20, you'll reschedule and keep building — there's no penalty, just more reps before you can default to Skio.</p>
+
+      <h2>How to Prepare</h2>
       <ul>
-        <li>☐ <strong>Narrative:</strong> acquisition-story Loom recorded and approved.</li>
-        <li>☐ <strong>Product / Acquisition:</strong> passed the widget, bundles, and checkout-link quizzes.</li>
-        <li>☐ <strong>Product / Retention:</strong> passed the portal, payment, payment-recovery, cancel-flow, journeys, segments, loyalty, and SMS quizzes.</li>
-        <li>☐ <strong>Demo:</strong> collected and linked at least one real example for each demo step (your demo store or a live merchant), with a note on why.</li>
-        <li>☐ <strong>Competitive:</strong> Looms recorded for Loop, Stay, and Ordergroove.</li>
+        <li>Build all four Journey use cases in your demo store before the call.</li>
+        <li>Make sure you can navigate the portal builder without hesitating.</li>
+        <li>Practice your Loop, Stay, and Ordergroove talk tracks <em>out loud</em> — not just read them in your head.</li>
       </ul>
+      <div class="callout callout-success"><div class="callout-title">You've got this</div>Reach out to your manager with any questions. Good luck.</div>
 `},
     { id:'s5p2', title:'Capstone Rubric', content:`
-      <h2>Capstone: the Certified Demo</h2>
-      <p>Run a full, recorded mock demo against your demo store to a peer or manager, following the Demo run-sheet. Handle at least two live objections (e.g. "Does it do post-purchase upsells?", "What's the difference vs. Recharge?", "How does migration work?"). <strong>Score at least 20 / 25 on the rubric below to pass.</strong></p>
+      <h2>Capstone Rubric</h2>
+      <p>Your manager scores the call live across five categories. Each is worth up to 5 points. <strong>Score 20 / 25 or higher to pass.</strong> Your recording will be linked here after the call so you can review it alongside the feedback.</p>
       <div style="background:var(--white);border:1.5px solid var(--border);border-radius:14px;overflow:hidden;margin-top:20px;">
         <div style="padding:15px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;"><div style="font-size:14px;font-weight:600;">Opened with the talk track and framed Skio as "us," not a separate company.</div><div style="font-size:13px;color:var(--muted);font-family:var(--serif);">/ 5</div></div>
         <div style="padding:15px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;"><div style="font-size:14px;font-weight:600;">Navigated the product live without fumbling.</div><div style="font-size:13px;color:var(--muted);font-family:var(--serif);">/ 5</div></div>
