@@ -1627,12 +1627,14 @@ function renderReader() {
     ? `<div class="reader-wrap"><div class="reader-inner fade-in">${renderQuizPage(section.id, page.quizGroupIndices)}</div></div>`
     : `<div class="reader-wrap"><div class="reader-inner fade-in">${page.content}${gongBlock}</div></div>`;
 
+  const wasSubmitted = !!state.progress[section.id]?.submittedAt; // true even while re-editing
   let navRight = '';
   if (isHwPage) {
     if (alreadySubmitted) {
       navRight = `<button class="btn-nav btn-nav-primary" id="btn-finish" disabled>✓ Submitted</button>`;
     } else {
-      navRight = `<button class="btn-nav btn-nav-primary" id="btn-submit-section" ${hwComplete ? '' : 'disabled'}>Submit Section ✓</button>`;
+      const label = wasSubmitted ? 'Re-Submit Section ✓' : 'Submit Section ✓';
+      navRight = `<button class="btn-nav btn-nav-primary" id="btn-submit-section" ${hwComplete ? '' : 'disabled'}>${label}</button>`;
     }
   } else if (isQuizPage) {
     navRight = `<button class="btn-nav btn-nav-primary" id="btn-next">Save & Continue →</button>`;
@@ -1735,7 +1737,10 @@ function renderHomeworkPage(sectionId) {
       <div class="hw-header">
         <h1>📋 ${hw.title}</h1>
         <p>${hw.intro}</p>
-        ${submitted ? '<div class="hw-submitted-badge">✓ Submitted — awaiting manager review</div>' : ''}
+        ${submitted ? `<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+          <div class="hw-submitted-badge">✓ Submitted — awaiting manager review</div>
+          <button class="btn-sm" id="btn-edit-submission" style="font-size:12px;">✏️ Edit Submission</button>
+        </div>` : ''}
       </div>
       <div style="background:white;border:1.5px solid var(--border);border-radius:12px;padding:24px;margin-bottom:20px;">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
@@ -1765,9 +1770,11 @@ function renderHomeworkPage(sectionId) {
         const secGrades = (state.repGrades || {})[sectionId] || {};
         const isApproved = secGrades.approved;
         const hasFeedback = Object.values(secGrades).some(v => v && typeof v === 'object' && v.score);
-        if (isApproved) return '<div class="hw-submitted-badge" style="background:var(--success-bg);color:var(--success);border-color:var(--success);">✓ Approved by your manager</div>';
-        if (hasFeedback) return '<div class="hw-submitted-badge" style="background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe;">💬 Manager feedback below — review and discuss</div>';
-        return '<div class="hw-submitted-badge">✓ Submitted — awaiting manager review</div>';
+        let badge;
+        if (isApproved) badge = '<div class="hw-submitted-badge" style="background:var(--success-bg);color:var(--success);border-color:var(--success);">✓ Approved by your manager</div>';
+        else if (hasFeedback) badge = '<div class="hw-submitted-badge" style="background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe;">💬 Manager feedback below — review and discuss</div>';
+        else badge = '<div class="hw-submitted-badge">✓ Submitted — awaiting manager review</div>';
+        return `<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">${badge}<button class="btn-sm" id="btn-edit-submission" style="font-size:12px;">✏️ Edit Submission</button></div>`;
       })() : ''}
     </div>`;
 
@@ -1832,6 +1839,16 @@ function bindHomeworkForm(sectionId) {
   // Set initial button state
   const submitBtn = document.getElementById('btn-submit-section');
   if (submitBtn) submitBtn.disabled = !isHomeworkComplete(sectionId);
+
+  // Edit submission — unlocks fields without clearing answers or grades
+  document.getElementById('btn-edit-submission')?.addEventListener('click', () => {
+    const confirmed = confirm('This will unlock your submission so you can revise your answers. Your existing answers and any manager feedback will not be lost. You\'ll need to re-submit when you\'re done.');
+    if (!confirmed) return;
+    state.progress[sectionId].submitted = false;
+    // submittedAt is intentionally kept so the nav shows "Re-Submit"
+    saveProgress();
+    render();
+  });
 }
 
 // ═══════════════════════════════════════════════════
