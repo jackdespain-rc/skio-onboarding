@@ -2046,6 +2046,20 @@ function renderAdminGate() {
   </div></div>`;
 }
 
+// Team structure — add or edit manager groups here
+const TEAM_GROUPS = [
+  { manager: 'Jack DeSpain',   reps: ['Paul Tolvo', 'Dane Kelsey', 'Virginia Smith'] },
+  { manager: 'Nick Destounis', reps: ['Rachel Rafford', 'Maddy Rickman', 'Madison Gramada', 'Devlin Forsyth'] },
+];
+
+function matchRepToGroup(repName) {
+  if (!repName) return -1;
+  const n = repName.trim().toLowerCase();
+  return TEAM_GROUPS.findIndex(g =>
+    g.reps.some(r => r.toLowerCase() === n || n.startsWith(r.split(' ')[0].toLowerCase()))
+  );
+}
+
 function renderAdminDashboard() {
   const header = `<div class="admin-header">
       <h1>Manager Dashboard</h1>
@@ -2065,30 +2079,80 @@ function renderAdminDashboard() {
   }
 
   const totalPages = SECTIONS.reduce((a, s) => a + s.pages.filter(p => !p.type).length, 0);
-  const rows = state.adminReps.length === 0
-    ? `<div style="padding:48px;text-align:center;color:var(--muted);font-size:14px;">No reps have started the course yet.</div>`
-    : state.adminReps.map(r => {
-        const prog = r.progress || {};
-        const completed = SECTIONS.filter(s => prog[s.id]?.submitted).length;
-        const readPages = SECTIONS.reduce((a, s) => a + (prog[s.id]?.readPages?.length || 0), 0);
-        const pct = Math.round((readPages / totalPages) * 100);
-        const status = completed === 5 ? '<span class="pill pill-green">Certified</span>'
-          : completed > 0 ? '<span class="pill pill-blue">In Progress</span>'
-          : '<span class="pill pill-gray">Not Started</span>';
-        return `<div class="rep-row" data-rep="${r.email}">
-          <div><div class="rep-name">${r.name || r.email}</div><div class="rep-email">${r.email}</div></div>
-          <div class="rep-cell">${completed} / 5</div>
-          <div class="rep-cell">${pct}%</div>
-          <div class="rep-cell">${status}</div>
-        </div>`;
-      }).join('');
+
+  function repRow(r) {
+    const prog = r.progress || {};
+    const completed = SECTIONS.filter(s => prog[s.id]?.submitted).length;
+    const readPages = SECTIONS.reduce((a, s) => a + (prog[s.id]?.readPages?.length || 0), 0);
+    const pct = Math.round((readPages / totalPages) * 100);
+    const hasCertCoaching = (prog.coaching || {}).deals?.some(d => d.company || d.name || d.calls?.length);
+    const status = completed === 5 ? '<span class="pill pill-green">Certified</span>'
+      : completed > 0 ? '<span class="pill pill-blue">In Progress</span>'
+      : '<span class="pill pill-gray">Not Started</span>';
+    return `<div class="rep-row" data-rep="${r.email}">
+      <div><div class="rep-name">${r.name || r.email}</div><div class="rep-email">${r.email}</div></div>
+      <div class="rep-cell">${completed} / 5</div>
+      <div class="rep-cell">${pct}%</div>
+      <div class="rep-cell" style="display:flex;gap:6px;flex-wrap:wrap;">${status}${hasCertCoaching ? '<span class="pill pill-blue">Coaching</span>' : ''}</div>
+    </div>`;
+  }
+
+  // Bucket reps into groups; any unmatched go to an "Other" bucket
+  const buckets = TEAM_GROUPS.map(() => []);
+  const unmatched = [];
+  (state.adminReps || []).forEach(r => {
+    const idx = matchRepToGroup(r.name);
+    if (idx >= 0) buckets[idx].push(r);
+    else unmatched.push(r);
+  });
+
+  let groupsHtml = '';
+  TEAM_GROUPS.forEach((group, gi) => {
+    const matched = buckets[gi];
+    // Reps defined in config but not yet signed up
+    const expectedNames = group.reps.filter(
+      name => !matched.some(r => r.name && r.name.trim().toLowerCase().startsWith(name.split(' ')[0].toLowerCase()))
+    );
+
+    const tableRows = matched.map(repRow).join('') +
+      expectedNames.map(name => `<div class="rep-row" style="opacity:0.4;cursor:default;">
+        <div><div class="rep-name">${name}</div><div class="rep-email">Not started yet</div></div>
+        <div class="rep-cell">0 / 5</div><div class="rep-cell">0%</div>
+        <div class="rep-cell"><span class="pill pill-gray">Not Started</span></div>
+      </div>`).join('');
+
+    groupsHtml += `
+      <div style="margin-bottom:28px;">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);">Manager</div>
+          <div style="font-size:15px;font-weight:700;color:var(--text);">${group.manager}</div>
+          <div style="font-size:12px;color:var(--muted);">${matched.length} / ${group.reps.length} active</div>
+        </div>
+        <div class="rep-table">
+          <div class="rep-table-head"><span>Rep</span><span>Sections</span><span>Progress</span><span>Status</span></div>
+          ${tableRows || '<div style="padding:20px 22px;font-size:13px;color:var(--muted);">No reps active yet.</div>'}
+        </div>
+      </div>`;
+  });
+
+  if (unmatched.length) {
+    groupsHtml += `
+      <div style="margin-bottom:28px;">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);margin-bottom:12px;">Other</div>
+        <div class="rep-table">
+          <div class="rep-table-head"><span>Rep</span><span>Sections</span><span>Progress</span><span>Status</span></div>
+          ${unmatched.map(repRow).join('')}
+        </div>
+      </div>`;
+  }
+
+  if (!state.adminReps.length && !unmatched.length) {
+    groupsHtml = `<div style="padding:48px;text-align:center;color:var(--muted);font-size:14px;">No reps have started the course yet.</div>`;
+  }
 
   return `<div class="admin-wrap"><div class="admin-inner">
     ${header}
-    <div class="rep-table">
-      <div class="rep-table-head"><span>Rep</span><span>Sections</span><span>Progress</span><span>Status</span></div>
-      ${rows}
-    </div>
+    ${groupsHtml}
   </div></div>`;
 }
 
