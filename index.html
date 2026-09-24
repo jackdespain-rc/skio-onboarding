@@ -206,6 +206,9 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 .hw-answer-readonly { background: var(--surface); border-radius: 10px; padding: 11px 14px; font-size: 14px; color: var(--text); line-height: 1.6; white-space: pre-wrap; word-break: break-word; }
 .hw-feedback-block { margin-top: 8px; background: var(--warn-bg); border-radius: 8px; padding: 9px 13px; font-size: 12px; color: var(--warn); }
 .hw-feedback-block strong { display: block; margin-bottom: 2px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; }
+.hw-loom-block { margin-top: 20px; padding: 16px 18px; background: var(--surface); border: 1.5px dashed var(--border); border-radius: 12px; }
+.hw-loom-label { font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+.hw-loom-link { font-size: 13px; color: var(--accent); word-break: break-all; }
 
 /* Admin */
 .admin-gate { flex: 1; display: flex; align-items: center; justify-content: center; padding: 32px; background: var(--bg); }
@@ -1575,6 +1578,13 @@ function renderScoresTab() {
     });
 
     const hwIdx = hwPageIndex(section.id);
+    const loomUrl = state.progress[section.id]?.loomUrl;
+    const loomRow = loomUrl
+      ? `<div class="scores-item" style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:13px;color:var(--muted);">🎥 Loom:</span>
+          <a href="${loomUrl}" target="_blank" rel="noopener" style="font-size:13px;color:var(--accent);word-break:break-all;">${loomUrl}</a>
+        </div>`
+      : '';
     return `<div class="scores-section">
       <div class="scores-section-header">
         <h3>Section ${section.num}: ${section.title}</h3>
@@ -1584,6 +1594,7 @@ function renderScoresTab() {
         </div>
       </div>
       ${itemsHtml || `<div style="padding:18px 22px;font-size:13px;color:var(--muted);">⏳ Awaiting manager review</div>`}
+      ${loomRow}
     </div>`;
   }).join('');
 
@@ -1881,6 +1892,13 @@ function renderHomeworkPage(sectionId) {
         }).join('')}
       </div>
       ${!complete && !submitted ? `<div class="callout callout-warn"><div class="callout-title">Not quite done</div>Go back and finish any unanswered questions — then the Submit button will unlock.</div>` : ''}
+      ${submitted && prog.loomUrl
+        ? `<div class="hw-loom-block"><div class="hw-loom-label">🎥 Your Loom Recording</div><a href="${prog.loomUrl}" target="_blank" rel="noopener" class="hw-loom-link">${prog.loomUrl}</a></div>`
+        : (!submitted ? `<div class="hw-loom-block">
+            <div class="hw-loom-label">🎥 Loom Recording <span style="font-weight:400;color:var(--muted);font-size:12px;">(optional)</span></div>
+            <div style="font-size:13px;color:var(--muted);margin-bottom:8px;">Recording yourself walking through your answers? Drop the link here.</div>
+            <input id="hw-loom-${sectionId}" type="url" class="hw-input" placeholder="https://www.loom.com/share/..." value="${prog.loomUrl || ''}" style="width:100%;">
+          </div>` : '')}
     </div>`;
   }
 
@@ -1943,6 +1961,19 @@ function renderHomeworkPage(sectionId) {
     }
     html += `</div>`;
   }
+  // Optional Loom recording field — stored separately from homework answers
+  const loomVal = prog.loomUrl || '';
+  if (submitted) {
+    html += loomVal
+      ? `<div class="hw-loom-block"><div class="hw-loom-label">🎥 Your Loom Recording</div><a href="${loomVal}" target="_blank" rel="noopener" class="hw-loom-link">${loomVal}</a></div>`
+      : '';
+  } else {
+    html += `<div class="hw-loom-block">
+      <div class="hw-loom-label">🎥 Loom Recording <span style="font-weight:400;color:var(--muted);font-size:12px;">(optional)</span></div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:8px;">Recording yourself walking through your answers? Drop the link here — it won't affect your submission or required fields.</div>
+      <input id="hw-loom-${sectionId}" type="url" class="hw-input" placeholder="https://www.loom.com/share/..." value="${loomVal}" style="width:100%;">
+    </div>`;
+  }
   html += `</div>`;
   return html;
 }
@@ -1961,6 +1992,13 @@ function bindHomeworkForm(sectionId) {
   // Set initial button state
   const submitBtn = document.getElementById('btn-submit-section');
   if (submitBtn) submitBtn.disabled = !isHomeworkComplete(sectionId);
+
+  // Optional Loom URL — stored at progress[sectionId].loomUrl, never affects isHomeworkComplete
+  document.getElementById('hw-loom-' + sectionId)?.addEventListener('input', e => {
+    if (!state.progress[sectionId]) state.progress[sectionId] = { readPages: [], homework: {}, submitted: false };
+    state.progress[sectionId].loomUrl = e.target.value;
+    saveProgress();
+  });
 
   // Edit submission — unlocks fields without clearing answers or grades
   document.getElementById('btn-edit-submission')?.addEventListener('click', () => {
@@ -2298,6 +2336,13 @@ function renderRepGradeView() {
       });
       html += `</div>`;
     });
+    // Rep's optional Loom recording for this section
+    if (secProg.loomUrl) {
+      html += `<div style="padding:12px 0;border-top:1px solid var(--border);display:flex;align-items:center;gap:10px;">
+        <span style="font-size:13px;color:var(--muted);">🎥 Loom:</span>
+        <a href="${secProg.loomUrl}" target="_blank" rel="noopener" style="font-size:13px;color:var(--accent);word-break:break-all;">${secProg.loomUrl}</a>
+      </div>`;
+    }
     html += `</div>`;
   });
 
