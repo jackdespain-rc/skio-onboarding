@@ -312,7 +312,7 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
   /* Hide everything that isn't the scorecard content */
   .sidebar, .topbar, .reader-nav, .no-print,
   #btn-back-home, #btn-back-list, #btn-export-pdf, #btn-export-csv,
-  #btn-save-capstone, #capstone-gong-url,
+  .capstone-save-btn, .capstone-gong-input,
   .star-row, input.grade-note { display: none !important; }
 
   /* Remove scrolling constraints — let content flow to pages */
@@ -1359,6 +1359,12 @@ function isHomeworkComplete(sectionId) {
   return true;
 }
 
+function hwPageIndex(sectionId) {
+  const section = SECTIONS.find(s => s.id === sectionId);
+  if (!section) return 0;
+  return section.pages.findIndex(p => p.type === 'homework');
+}
+
 function toast(msg) {
   const el = document.getElementById('toast');
   el.textContent = msg; el.classList.add('show');
@@ -1517,16 +1523,22 @@ function renderScoresTab() {
   const avgScore = totalGraded ? (totalScore / totalGraded).toFixed(1) : null;
 
   // Capstone block
-  const gongUrl = grades.capstone && grades.capstone.gongUrl;
-  const capstoneBlock = gongUrl ? `
+  const capUrls = [
+    grades.capstone && grades.capstone.gongUrl,
+    grades.capstone && grades.capstone.gongUrl2,
+    grades.capstone && grades.capstone.gongUrl3,
+  ].filter(Boolean);
+  const capstoneBlock = capUrls.length ? `
     <div class="scores-section" style="border-color:var(--accent);">
       <div class="scores-section-header">
-        <h3>🎥 Capstone Recording</h3>
-        <span class="pill pill-green">Linked</span>
+        <h3>🎥 Capstone Recording${capUrls.length > 1 ? 's' : ''}</h3>
+        <span class="pill pill-green">${capUrls.length} Linked</span>
       </div>
       <div class="scores-item">
-        <div style="font-size:13px;color:var(--muted);margin-bottom:10px;">Your manager has linked your mock demo recording below.</div>
-        <a href="${gongUrl}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:#fff;padding:9px 16px;border-radius:9px;font-size:13px;font-weight:600;text-decoration:none;">▶ Watch in Gong</a>
+        <div style="font-size:13px;color:var(--muted);margin-bottom:10px;">Your manager has linked your mock demo recording${capUrls.length > 1 ? 's' : ''} below.</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          ${capUrls.map((u, i) => `<a href="${u}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:#fff;padding:9px 16px;border-radius:9px;font-size:13px;font-weight:600;text-decoration:none;">▶ Watch Attempt ${i + 1} in Gong</a>`).join('')}
+        </div>
       </div>
     </div>` : '';
 
@@ -1562,10 +1574,14 @@ function renderScoresTab() {
       });
     });
 
+    const hwIdx = hwPageIndex(section.id);
     return `<div class="scores-section">
       <div class="scores-section-header">
         <h3>Section ${section.num}: ${section.title}</h3>
-        ${approved ? '<span class="pill pill-green">✓ Approved</span>' : '<span class="pill pill-gray">Pending</span>'}
+        <div style="display:flex;align-items:center;gap:8px;">
+          ${approved ? '<span class="pill pill-green">✓ Approved</span>' : '<span class="pill pill-gray">Pending</span>'}
+          <button class="btn-sm" data-edit-section="${section.id}" data-edit-hw-idx="${hwIdx}" style="font-size:12px;padding:5px 10px;">✏️ Edit</button>
+        </div>
       </div>
       ${itemsHtml || `<div style="padding:18px 22px;font-size:13px;color:var(--muted);">⏳ Awaiting manager review</div>`}
     </div>`;
@@ -1587,10 +1603,10 @@ function renderScoresTab() {
         <div class="scores-stat-num">${avgScore ? avgScore + ' / 5' : '—'}</div>
         <div class="scores-stat-label">Avg Score</div>
       </div>
-      ${gongUrl ? `<div style="width:1px;height:40px;background:var(--border);"></div>
+      ${capUrls.length ? `<div style="width:1px;height:40px;background:var(--border);"></div>
       <div class="scores-stat">
         <div class="scores-stat-num" style="font-size:20px;">🎥</div>
-        <div class="scores-stat-label">Recording Linked</div>
+        <div class="scores-stat-label">${capUrls.length > 1 ? capUrls.length + ' Recordings' : 'Recording Linked'}</div>
       </div>` : ''}
     </div>
     ${capstoneBlock}
@@ -1660,7 +1676,20 @@ function bindDashboard() {
     el.addEventListener('click', () => {
       const sId = el.dataset.open;
       if (!isSectionUnlocked(sId)) { toast('Complete the previous section first to unlock this one.'); return; }
-      openReader(sId, 0);
+      const p = getSectionProgress(sId);
+      const idx = p.submitted ? hwPageIndex(sId) : 0;
+      openReader(sId, idx >= 0 ? idx : 0);
+    });
+  });
+  document.querySelectorAll('[data-edit-section]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const sId = btn.dataset.editSection;
+      const idx = parseInt(btn.dataset.editHwIdx, 10) || 0;
+      const p = state.progress[sId] || {};
+      p.submitted = false;
+      state.progress[sId] = p;
+      saveProgress();
+      openReader(sId, idx >= 0 ? idx : 0);
     });
   });
 }
@@ -1702,12 +1731,15 @@ function renderReader() {
   // If the rep has a Gong recording uploaded, append it to the Capstone Rubric page
   const gongBlock = (() => {
     if (page.id !== 's5p2') return '';
-    const url = state.repGrades && state.repGrades.capstone && state.repGrades.capstone.gongUrl;
-    if (!url) return '';
+    const cap = state.repGrades && state.repGrades.capstone || {};
+    const capUrls = [cap.gongUrl, cap.gongUrl2, cap.gongUrl3].filter(Boolean);
+    if (!capUrls.length) return '';
     return `<div class="callout callout-accent" style="margin-top:24px;">
-      <div class="callout-title">🎥 Your Mock Demo Recording</div>
-      <p style="margin-bottom:10px;">Your manager has linked your Gong recording below. Review it to see where you nailed it and what to sharpen before your next call.</p>
-      <a href="${url}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:#fff;padding:10px 18px;border-radius:9px;font-size:13px;font-weight:600;text-decoration:none;">▶ Watch your mock demo in Gong</a>
+      <div class="callout-title">🎥 Your Mock Demo Recording${capUrls.length > 1 ? 's' : ''}</div>
+      <p style="margin-bottom:10px;">Your manager has linked your Gong recording${capUrls.length > 1 ? 's' : ''} below. Review to see where you nailed it and what to sharpen.</p>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        ${capUrls.map((u, i) => `<a href="${u}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:#fff;padding:10px 18px;border-radius:9px;font-size:13px;font-weight:600;text-decoration:none;">▶ Watch Attempt ${i + 1} in Gong</a>`).join('')}
+      </div>
     </div>`;
   })();
 
@@ -2190,7 +2222,13 @@ function renderRepGradeView() {
   const repGrades = grades[email] || {};
   const name = getRepName(email);
 
-  const capstoneSaved = repGrades.capstone && repGrades.capstone.gongUrl;
+  const cap = repGrades.capstone || {};
+  const capAttempts = [
+    { key: 'gongUrl',  label: 'Attempt 1', val: cap.gongUrl  || '' },
+    { key: 'gongUrl2', label: 'Attempt 2', val: cap.gongUrl2 || '' },
+    { key: 'gongUrl3', label: 'Attempt 3', val: cap.gongUrl3 || '' },
+  ];
+  const anyCapSaved = capAttempts.some(a => a.val);
 
   let html = `<div class="admin-wrap"><div class="admin-inner">
     <div class="print-header" style="margin-bottom:20px;padding-bottom:14px;border-bottom:2px solid #e5e7eb;">
@@ -2208,16 +2246,20 @@ function renderRepGradeView() {
 
     <div class="grade-section" style="background:var(--white);border:1.5px solid var(--accent);border-radius:14px;padding:22px 24px;margin-bottom:20px;">
       <div class="grade-section-header" style="margin-bottom:14px;">
-        <h3 style="color:var(--accent);">🎥 Capstone — Mock Demo Recording</h3>
-        ${capstoneSaved ? '<span class="pill pill-green">Recording linked</span>' : '<span class="pill pill-gray">No recording yet</span>'}
+        <h3 style="color:var(--accent);">🎥 Capstone — Mock Demo Recordings</h3>
+        ${anyCapSaved ? '<span class="pill pill-green">Recording(s) linked</span>' : '<span class="pill pill-gray">No recordings yet</span>'}
       </div>
-      <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">Paste the Gong call URL here. The rep will see a "Watch your mock demo" button on their Capstone Rubric page.</p>
-      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
-        <input id="capstone-gong-url" type="url" placeholder="https://app.gong.io/call?id=..." value="${capstoneSaved ? repGrades.capstone.gongUrl : ''}" style="flex:1;min-width:260px;border:1.5px solid var(--border);border-radius:9px;padding:9px 14px;font-size:13px;background:var(--bg);color:var(--text);">
-        <button class="btn-sm btn-sm-primary" id="btn-save-capstone" style="white-space:nowrap;">Save Recording</button>
-      </div>
-      ${capstoneSaved ? `<div style="margin-top:10px;font-size:12px;color:var(--success);">✓ Currently saved: <a href="${repGrades.capstone.gongUrl}" target="_blank" rel="noopener" style="color:var(--accent);">${repGrades.capstone.gongUrl}</a></div>` : ''}
-      <div class="capstone-url-print">${capstoneSaved ? 'Recording: ' + repGrades.capstone.gongUrl : 'No recording linked yet.'}</div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">Paste Gong call URLs for each attempt. Reps will see a "Watch your mock demo" button on their Capstone Rubric page.</p>
+      ${capAttempts.map(a => `
+      <div style="margin-bottom:14px;">
+        <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.05em;">${a.label}</div>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+          <input class="capstone-gong-input" data-cap-key="${a.key}" type="url" placeholder="https://app.gong.io/call?id=..." value="${a.val}" style="flex:1;min-width:260px;border:1.5px solid var(--border);border-radius:9px;padding:9px 14px;font-size:13px;background:var(--bg);color:var(--text);">
+          <button class="btn-sm btn-sm-primary capstone-save-btn" data-cap-key="${a.key}" style="white-space:nowrap;">Save</button>
+        </div>
+        ${a.val ? `<div style="margin-top:6px;font-size:12px;color:var(--success);">✓ <a href="${a.val}" target="_blank" rel="noopener" style="color:var(--accent);">${a.val}</a></div>` : ''}
+      </div>`).join('')}
+      <div class="capstone-url-print">${capAttempts.filter(a=>a.val).map((a,i)=>'Attempt '+(i+1)+': '+a.val).join(' | ') || 'No recordings linked yet.'}</div>
     </div>`;
 
   SECTIONS.forEach(section => {
@@ -2308,7 +2350,7 @@ function exportRepsCsv() {
     'S' + s.num + ' Approved',
     'S' + s.num + ' Avg Score'
   ]);
-  const headers = ['Name', 'Email', 'Last Active', ...sectionHeaders, 'Capstone Recorded', 'Gong URL'];
+  const headers = ['Name', 'Email', 'Last Active', ...sectionHeaders, 'Capstone Recorded', 'Gong URL Attempt 1', 'Gong URL Attempt 2', 'Gong URL Attempt 3'];
 
   const rows = state.adminReps.map(r => {
     const prog = r.progress || {};
@@ -2327,14 +2369,17 @@ function exportRepsCsv() {
       return [submitted, approved, avg];
     });
 
-    const capstoneSaved = grades.capstone && grades.capstone.gongUrl;
+    const cap = grades.capstone || {};
+    const capSaved = !!(cap.gongUrl || cap.gongUrl2 || cap.gongUrl3);
     return [
       r.name || r.email,
       r.email,
       lastActive,
       ...sectionCells,
-      capstoneSaved ? 'Yes' : 'No',
-      capstoneSaved ? grades.capstone.gongUrl : ''
+      capSaved ? 'Yes' : 'No',
+      cap.gongUrl || '',
+      cap.gongUrl2 || '',
+      cap.gongUrl3 || ''
     ];
   });
 
@@ -2414,14 +2459,18 @@ function bindRepGradeView() {
     });
   });
 
-  // Capstone Gong URL
-  document.getElementById('btn-save-capstone')?.addEventListener('click', () => {
-    const url = document.getElementById('capstone-gong-url')?.value.trim();
-    if (!grades[email].capstone) grades[email].capstone = {};
-    grades[email].capstone.gongUrl = url;
-    saveGrades(grades);
-    toast('Recording saved ✓');
-    render(); // re-renders the card to show "currently saved" state
+  // Capstone Gong URLs (Attempt 1, 2, 3)
+  document.querySelectorAll('.capstone-save-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const key = btn.dataset.capKey;
+      const input = document.querySelector('.capstone-gong-input[data-cap-key="' + key + '"]');
+      const url = input ? input.value.trim() : '';
+      if (!grades[email].capstone) grades[email].capstone = {};
+      grades[email].capstone[key] = url;
+      saveGrades(grades);
+      toast('Recording saved ✓');
+      render();
+    });
   });
 
   // Approve buttons
